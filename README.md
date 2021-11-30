@@ -17,5 +17,7 @@
 
 ## 開發模式
  進入/backend 執行 mvn spring-boot:run 需要額外安裝PSQL
+ 
  因有使用 ORM 技術
+ 
  所以在PSQL內新增一個名稱為 pvs 的 db 即可使用
