@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 import './Login.css'
 import {
   TextField,
-  Button
+  Button,
 } from '@material-ui/core'
 
 export default function Login() {
@@ -20,6 +20,11 @@ export default function Login() {
     backdrop: {
       zIndex: theme.zIndex.drawer + 1,
       color: '#fff',
+    },
+    button: {
+      '& > *':{
+        margin: theme.spacing(3),
+      },
     },
   }));
 
@@ -50,6 +55,25 @@ export default function Login() {
     }
   }
 
+  const register = () => {
+    if(username === "" || password === "") {
+      alert("不準啦馬的>///<")
+    } else {
+      let payload = {
+        username: username,
+        password: password
+      }
+      Axios.post(`http://localhost:9100/pvs-api/member`, payload)
+        .then((response) => {
+          alert(response.data)
+        })
+        .catch((e) => {
+          alert(e.response.data)
+          console.error(e)
+        }) 
+    }
+  }
+
   const goToSelect = () => {
     history.push("/select")
   }
@@ -59,27 +83,31 @@ export default function Login() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <TextField
-              id="username"
-              label="Username"
-              type="text"
-              variant="outlined"
-              background
-              onChange = {(e) => {setUsername(e.target.value)}}
-            />
+          id="username"
+          label="Username"
+          type="text"
+          variant="outlined"
+          background
+          onChange = {(e) => {setUsername(e.target.value)}}
+        />
 
-          <TextField
-              id="password"
-              label="Password"
-              type="password"
-              variant="outlined"
-              background
-              onChange = {(e) => {setPassword(e.target.value)}}
-            />
-        <br/>
-        {/* <button onClick={login} >Login</button> */}
-        <Button variant="contained" onClick={login} color="primary">
-            Login
-        </Button>
+        <TextField
+          id="password"
+          label="Password"
+          type="password"
+          variant="outlined"
+          background
+          onChange = {(e) => {setPassword(e.target.value)}}
+        />
+
+        <div class = {classes.button}>
+          <Button variant="contained" onClick={login} style={{width: '90px'}} color="primary">
+              Login
+          </Button>
+          <Button variant="contained" onClick={register} style={{width: '90px'}} color="primary">
+              Register
+          </Button>
+        </div>
       </header>
     </div>
   )
