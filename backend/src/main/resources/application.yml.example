@@ -24,8 +24,8 @@ spring:
     active: test
   datasource:
     url: jdbc:postgresql://localhost:5432/PVS
-    username:
-    password:
+    username: 
+    password: 
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
