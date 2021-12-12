@@ -5,7 +5,9 @@ import { Box, CardActionArea, Avatar, CardActions, IconButton } from '@material-
 import GitHubIcon from '@material-ui/icons/GitHub';
 import GpsFixedIcon from '@material-ui/icons/GpsFixed';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import AddRepositoryDialog from './AddRepositoryDialog';
+import DeleteRepositoryDialog from './DeleteRepositoryDialog';
 import { connect } from 'react-redux'
 import { setCurrentProjectId } from '../../redux/action'
 
@@ -36,6 +38,7 @@ function ProjectAvatar(props) {
 
 
   const [addRepoDialogOpen, setAddRepoDialogOpen] = useState(false)
+  const [deleteRepoDialogOpen, setDeleteRepoDialogOpen] = useState(false)
   const [wantedRepoType, setWantedRepoType] = useState("")
   const [hasGithubRepo, setHasGithubRepo] = useState(false)
   const [hasSonarRepo, setHasSonarRepo] = useState(false)
@@ -79,6 +82,11 @@ function ProjectAvatar(props) {
     setAddRepoDialogOpen(true)
   }
 
+  const showDeleteRepoDialog = () => {
+
+    setDeleteRepoDialogOpen(true)
+  }
+
   return (
     <div>
     <Box className={props.size==='large' ? classes.large : classes.small}>
@@ -105,6 +113,11 @@ function ProjectAvatar(props) {
                 <AddIcon/>
               </IconButton>
             }
+            {(hasGithubRepo || hasSonarRepo) &&
+              <IconButton aria-label="Delete Repository" onClick={showDeleteRepoDialog}>
+                <DeleteIcon/>
+              </IconButton>
+            }
           </CardActions>
         }
     </Box>
@@ -113,7 +126,12 @@ function ProjectAvatar(props) {
       reloadProjects={props.reloadProjects}
       handleClose={() => setAddRepoDialogOpen(false)}
       projectId={props.project.projectId}
-      repoType={wantedRepoType}
+    />
+    <DeleteRepositoryDialog
+      open={deleteRepoDialogOpen} 
+      reloadProjects={props.reloadProjects}
+      handleClose={() => setDeleteRepoDialogOpen(false)}
+      projectId={props.project.projectId}
     />
   </div>//:()
   )

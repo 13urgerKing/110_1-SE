@@ -68,4 +68,12 @@ public class Project {
     public void setRepositorySet(Set<Repository> repositorySet) {
         this.repositorySet = repositorySet;
     }
+
+    public Repository findRepositoryByType(String type){
+        for (Repository repository : repositorySet) {
+            if (repository.getType().equals(type))
+                return repository;
+        }
+        return null;
+    }
 }
