@@ -49,6 +49,10 @@ public class ProjectService {
         }
     }
 
+    public void delete(DeleteProjectDTO deleteProjectDTO) throws IOException {
+        projectDAO.deleteById(Long.parseLong(deleteProjectDTO.getProjectId()));
+    }
+
     public List<ResponseProjectDTO> getMemberProjects(Long memberId) {
         List<Project> projectList = projectDAO.findByMemberId(memberId);
         List<ResponseProjectDTO> projectDTOList = new ArrayList<>();
