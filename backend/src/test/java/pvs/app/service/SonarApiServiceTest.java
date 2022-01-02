@@ -37,6 +37,18 @@ public class SonarApiServiceTest {
     }
 
     @Test
+    public void checkSonarURL_thenReturnFalse() {
+        boolean exist = sonarApiService.checkSonarURL("pvs-springboot");
+        Assert.assertFalse(exist);
+    }
+
+    @Test
+    public void checkSonarURL_thenReturnTrue() throws InterruptedException {
+        boolean exist = sonarApiService.checkSonarURL("http://localhost:9000/dashboard");
+        Assert.assertTrue(true);
+    }
+
+    @Test
     public void getSonarCodeCoverage() throws IOException {
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(200)

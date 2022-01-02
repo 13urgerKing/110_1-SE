@@ -61,7 +61,7 @@ public class ProjectController {
 
     @GetMapping("/repository/sonar/check")
     public ResponseEntity<String> checkSonarURL(@RequestParam("url") String url) {
-        if(repositoryService.checkSonarURL(url)) {
+        if(sonarApiService.checkSonarURL(url)) {
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
         }
         else {
@@ -84,7 +84,7 @@ public class ProjectController {
     @PostMapping("/project/{projectId}/repository/sonar")
     public ResponseEntity<String> addSonarRepository(@RequestBody AddSonarRepositoryDTO addSonarRepositoryDTO) {
         try{
-            if(repositoryService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL())) {
+            if(sonarApiService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL())) {
                 if(projectService.addSonarRepo(addSonarRepositoryDTO)) {
                     return ResponseEntity.status(HttpStatus.OK).body(successMessage);
                 } else {
