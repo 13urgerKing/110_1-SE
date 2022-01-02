@@ -118,7 +118,7 @@ public class ProjectService {
         }
     }
 
-    public boolean deleteGithubRepo(DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) throws IOException {
+    public boolean deleteGithubRepo(DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) {
         Optional<Project> projectOptional = projectDAO.findById(deleteGithubRepositoryDTO.getProjectId());
         if(projectOptional.isPresent()) {
             Project project = projectOptional.get();
