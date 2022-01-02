@@ -134,7 +134,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
               label="Github Token"
               type="text"
               fullWidth
-              onChange = {(e) => {setGithubRepositoryURL(e.target.value)}}
+              onChange = {(e) => {setGithubToken(e.target.value)}}
               required
               InputProps={{
                 startAdornment: (
