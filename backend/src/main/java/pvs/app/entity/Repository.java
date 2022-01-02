@@ -20,6 +20,9 @@ public class Repository {
     @NotNull
     private String type;
 
+    @NotNull
+    private String githubToken;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "repository")
     private Set<GithubCommit> githubCommitSet;
 }
