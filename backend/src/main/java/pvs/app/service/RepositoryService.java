@@ -30,12 +30,12 @@ public class RepositoryService {
         }
         String targetURL = url.replace("github.com", "api.github.com/repos");
         AtomicBoolean result = new AtomicBoolean(false);
-
+        
         this.webClient
                 .get()
                 .uri(targetURL)
                 .exchange()
-                .doOnSuccess(clientResponse ->
+                .doOnSuccess(clientResponse -> 
                     result.set(clientResponse.statusCode().equals(HttpStatus.OK))
                 )
                 .block();

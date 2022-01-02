@@ -13,6 +13,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pvs.app.Application;
 import pvs.app.dao.ProjectDAO;
 import pvs.app.dto.CreateProjectDTO;
+import pvs.app.dto.DeleteGithubRepositoryDTO;
+import pvs.app.dto.DeleteSonarRepositoryDTO;
 import pvs.app.dto.ResponseProjectDTO;
 import pvs.app.entity.Project;
 import pvs.app.entity.Repository;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -40,6 +43,7 @@ public class ProjectServiceTest {
 
     Project project;
     Repository githubRepository;
+    Repository sonarRepository;
     Set<Repository> repositorySet;
 
     final String responseJson = "{\"avatarUrl\":\"https://avatars3.githubusercontent.com/u/17744001?u=038d9e068c4205d94c670d7d89fb921ec5b29782&v=4\"}";
@@ -62,9 +66,16 @@ public class ProjectServiceTest {
         githubRepository.setUrl("https://github.com/facebook/react");
         githubRepository.setRepositoryId(1L);
 
+        sonarRepository = new Repository();
+        sonarRepository.setType("sonar");
+        sonarRepository.setUrl("https://sonar.com/facebook/react");
+        sonarRepository.setRepositoryId(2L);
+
         repositorySet = new HashSet<>();
         repositorySet.add(githubRepository);
+        repositorySet.add(sonarRepository);
         project.setRepositorySet(repositorySet);
+
 
         ObjectMapper mapper = new ObjectMapper();
         mockAvatar = Optional.ofNullable(mapper.readTree(responseJson));
@@ -107,5 +118,45 @@ public class ProjectServiceTest {
         //then
         assertEquals(1, projectService.getMemberProjects(1L).size());
 //        assertTrue(projectDTOList.equals(projectService.getMemberProjects(1L)));
+    }
+
+    @Test
+    public void deleteSonarRepoFail(){
+        when(projectDAO.findById(any(Long.class)))
+                .thenReturn(Optional.empty());
+        DeleteSonarRepositoryDTO deleteSonarRepositoryDTO = new DeleteSonarRepositoryDTO();
+        deleteSonarRepositoryDTO.setProjectId(1L);
+        assertFalse(projectService.deleteSonarRepo(deleteSonarRepositoryDTO));
+        assertEquals(sonarRepository, project.findRepositoryByType("sonar"));
+    }
+
+    @Test
+    public void deleteSonarRepoSuccess(){
+        when(projectDAO.findById(any(Long.class)))
+                .thenReturn(Optional.of(project));
+        DeleteSonarRepositoryDTO deleteSonarRepositoryDTO = new DeleteSonarRepositoryDTO();
+        deleteSonarRepositoryDTO.setProjectId(1L);
+        assertTrue(projectService.deleteSonarRepo(deleteSonarRepositoryDTO));
+        assertEquals(null, project.findRepositoryByType("sonar"));
+    }
+
+    @Test
+    public void deleteGithubRepoFail(){
+        when(projectDAO.findById(any(Long.class)))
+                .thenReturn(Optional.empty());
+        DeleteGithubRepositoryDTO deleteGithubRepositoryDTO = new DeleteGithubRepositoryDTO();
+        deleteGithubRepositoryDTO.setProjectId(1L);
+        assertFalse(projectService.deleteGithubRepo(deleteGithubRepositoryDTO));
+        assertEquals(githubRepository, project.findRepositoryByType("github"));
+    }
+
+    @Test
+    public void deleteGithubRepoSuccess(){
+        when(projectDAO.findById(any(Long.class)))
+                .thenReturn(Optional.of(project));
+                DeleteGithubRepositoryDTO deleteGithubRepositoryDTO = new DeleteGithubRepositoryDTO();
+        deleteGithubRepositoryDTO.setProjectId(1L);
+        assertTrue(projectService.deleteGithubRepo(deleteGithubRepositoryDTO));
+        assertEquals(null, project.findRepositoryByType("github"));
     }
 }

@@ -105,4 +105,28 @@ public class ProjectService {
             return false;
         }
     }
+
+    public boolean deleteSonarRepo(DeleteSonarRepositoryDTO deleteSonarRepositoryDTO) {
+        Optional<Project> projectOptional = projectDAO.findById(deleteSonarRepositoryDTO.getProjectId());
+        if(projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            project.getRepositorySet().remove(project.findRepositoryByType("sonar"));
+            projectDAO.save(project);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deleteGithubRepo(DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) {
+        Optional<Project> projectOptional = projectDAO.findById(deleteGithubRepositoryDTO.getProjectId());
+        if(projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            project.getRepositorySet().remove(project.findRepositoryByType("github"));
+            projectDAO.save(project);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
