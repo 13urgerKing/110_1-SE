@@ -11,6 +11,7 @@ import pvs.app.dto.AddGithubRepositoryDTO;
 import pvs.app.dto.AddSonarRepositoryDTO;
 import pvs.app.dto.CreateProjectDTO;
 import pvs.app.dto.DeleteGithubRepositoryDTO;
+import pvs.app.dto.DeleteProjectDTO;
 import pvs.app.dto.DeleteSonarRepositoryDTO;
 import pvs.app.dto.ResponseProjectDTO;
 import pvs.app.service.ProjectService;
@@ -74,6 +75,16 @@ public class ProjectController {
         } catch (IOException e) {
             e.printStackTrace();
             logger.debug(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+        }
+    }
+
+    @PostMapping("/project/delete")
+    public ResponseEntity<String> deleteProject(@RequestBody DeleteProjectDTO deleteProjectDTO) {
+        try{
+            projectService.delete(deleteProjectDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+        }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
     }
