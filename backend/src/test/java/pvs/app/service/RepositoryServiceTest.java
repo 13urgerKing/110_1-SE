@@ -36,18 +36,6 @@ public class RepositoryServiceTest {
     }
 
     @Test
-    public void checkSonarURL_thenReturnFalse() {
-        boolean exist = repositoryService.checkSonarURL("pvs-springboot");
-        Assert.assertFalse(exist);
-    }
-
-    @Test
-    public void checkSonarURL_thenReturnTrue() throws InterruptedException {
-        boolean exist = repositoryService.checkSonarURL("http://localhost:9000/dashboard");
-        Assert.assertTrue(true);
-    }
-
-    @Test
     public void checkGithubURL_thenReturnFalse() throws InterruptedException {
         boolean exist = repositoryService.checkGithubURL("pvs-springboot");
         Assert.assertFalse(exist);

@@ -16,6 +16,7 @@ import pvs.app.dto.DeleteSonarRepositoryDTO;
 import pvs.app.dto.ResponseProjectDTO;
 import pvs.app.service.ProjectService;
 import pvs.app.service.RepositoryService;
+import pvs.app.service.SonarApiService;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,10 +42,12 @@ public class ProjectController {
     
     private final ProjectService projectService;
     private final RepositoryService repositoryService;
+    private final SonarApiService sonarApiService;
 
-    public ProjectController(ProjectService projectService, RepositoryService repositoryService){
+    public ProjectController(ProjectService projectService, RepositoryService repositoryService, SonarApiService sonarApiService){
         this.projectService = projectService;
         this.repositoryService = repositoryService;
+        this.sonarApiService = sonarApiService;
     }
 
     @GetMapping("/repository/github/check")
@@ -59,7 +62,7 @@ public class ProjectController {
 
     @GetMapping("/repository/sonar/check")
     public ResponseEntity<String> checkSonarURL(@RequestParam("url") String url) {
-        if(repositoryService.checkSonarURL(url)) {
+        if(sonarApiService.checkSonarURL(url)) {
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
         }
         else {
@@ -92,7 +95,7 @@ public class ProjectController {
     @PostMapping("/project/{projectId}/repository/sonar")
     public ResponseEntity<String> addSonarRepository(@RequestBody AddSonarRepositoryDTO addSonarRepositoryDTO) {
         try{
-            if(repositoryService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL())) {
+            if(sonarApiService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL())) {
                 if(projectService.addSonarRepo(addSonarRepositoryDTO)) {
                     return ResponseEntity.status(HttpStatus.OK).body(successMessage);
                 } else {
