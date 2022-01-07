@@ -40,7 +40,7 @@ export default function Login() {
       alert("不準啦馬的>///<")
     } else {
       let payload = {
-        username: username,
+        username : username,
         password : password
       }
       Axios.post(`http://localhost:9100/pvs-api/auth/login`, payload)
