@@ -63,6 +63,7 @@ public class ProjectService {
                 RepositoryDTO repositoryDTO = new RepositoryDTO();
                 repositoryDTO.setUrl(repository.getUrl());
                 repositoryDTO.setType(repository.getType());
+                repositoryDTO.setGithubToken(repository.getGithubToken());
                 projectDTO.getRepositoryDTOList().add(repositoryDTO);
             }
             projectDTOList.add(projectDTO);

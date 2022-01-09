@@ -45,7 +45,7 @@ function CommitsPage(prop) {
 
   useEffect(() => {
     Axios.get(`http://localhost:9100/pvs-api/project/1/${projectId}`,
-     { headers: {"Authorization" : `${jwtToken}`} })
+    { headers: {"Authorization" : `${jwtToken}`} })
     .then((response) => {
       setCurrentProject(response.data)
     })
@@ -60,8 +60,15 @@ function CommitsPage(prop) {
       handleToggle()
       const githubRepo = currentProject.repositoryDTOList.find(repo => repo.type == 'github')
       const query = githubRepo.url.split("github.com/")[1]
-      Axios.post(`http://localhost:9100/pvs-api/github/commits/${query}`,"",
-      { headers: {"Authorization" : `${jwtToken}`} })
+      const githubToken = githubRepo.githubToken
+      Axios.post(`http://localhost:9100/pvs-api/github/commits/${query}`,
+        {
+          "githubToken" : `${githubToken}`
+        },
+        { 
+          headers: {"Authorization" : `${jwtToken}`} 
+        }
+      )
       .then((response) => {
         // todo need reafctor with async
         Axios.get(`http://localhost:9100/pvs-api/github/commits/${query}`,

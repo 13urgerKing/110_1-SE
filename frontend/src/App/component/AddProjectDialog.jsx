@@ -63,7 +63,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
     }
 
     const checkGithubRepositoryURL = () => {
-      return Axios.get(`http://localhost:9100/pvs-api/repository/github/check?url=${githubRepositoryURL}`,
+      return Axios.get(`http://localhost:9100/pvs-api/repository/github/check?url=${githubRepositoryURL}&token=${githubToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setIsGithubAvailable(true);
