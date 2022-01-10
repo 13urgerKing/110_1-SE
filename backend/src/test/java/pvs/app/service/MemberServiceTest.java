@@ -74,4 +74,17 @@ public class MemberServiceTest {
         assertEquals(member01DTO.toString(), memberDTO.toString());
     }
 
+    @Test
+    public void createUser_userRoleisNull() {
+        //context
+        when(mockRoleService.getByName("USER"))
+                .thenReturn(null);
+        when(mockMemberDAO.save(any(Member.class))).thenReturn(member01);
+
+        //when
+        MemberDTO memberDTO = memberService.createUser(member01DTO);
+        //then
+        assertEquals(member01DTO.toString(), memberDTO.toString());
+    }
+
 }
