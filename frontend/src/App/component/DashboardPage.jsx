@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import ProjectAvatar from './ProjectAvatar'
 import Axios from 'axios'
-
+import './Trello.css'
+import trelloLoad from './Trello.js'
 const useStyles = makeStyles((theme) => ({
     root: {
       display: 'flex',
@@ -35,18 +36,22 @@ function DashboardPage(props) {
         alert(e.response.status)
         console.error(e)
         })
+        trelloLoad();
     }, [])
 
     return (
-        <div className={classes.root}>
-            <ProjectAvatar 
-            size = "small" 
-            project={currentProject}
-            />
-            <p>
-            <h2>{currentProject ? currentProject.projectName : ""}</h2>
-            </p>
+      <div>
+        <h2>Trello Board</h2>
+
+
+        <div className="base">
+          <div className="board">
+            <div className="board-lists" id="lists">
+            </div>
+          </div>
         </div>
+      </div>
+
     )
 }
 
