@@ -16,6 +16,7 @@ import {
 export default function AddProjectDialog({ open, reloadProjects, handleClose }) {
     const [projectName, setProjectName] = useState("")
     const [githubRepositoryURL, setGithubRepositoryURL] = useState("")
+    const [githubToken, setGithubToken] = useState("")
     const [sonarRepositoryURL, setSonarRepositoryURL] = useState("")
     const [isGithubAvailable, setIsGithubAvailable] = useState(false)
     const [isSonarAvailable, setIsSonarAvailable] = useState(false)
@@ -26,7 +27,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
       if(projectName === "" || (githubRepositoryURL === "" && sonarRepositoryURL === "")) {
         alert("不準啦馬的>///<")
       } else {
-        if(githubRepositoryURL !== "") {
+        if(githubRepositoryURL !== "" && githubToken !== "") {
           checker.push(checkGithubRepositoryURL());
         }
         if(sonarRepositoryURL !== "") {
@@ -39,6 +40,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
               let payload = {
                 projectName : projectName,
                 githubRepositoryURL : githubRepositoryURL,
+                githubToken : githubToken,
                 sonarRepositoryURL : sonarRepositoryURL
               }
               
@@ -61,7 +63,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
     }
 
     const checkGithubRepositoryURL = () => {
-      return Axios.get(`http://localhost:9100/pvs-api/repository/github/check?url=${githubRepositoryURL}`,
+      return Axios.get(`http://localhost:9100/pvs-api/repository/github/check?url=${githubRepositoryURL}&token=${githubToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setIsGithubAvailable(true);
@@ -90,6 +92,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
     useEffect(() => {
       setProjectName("")
       setGithubRepositoryURL("")
+      setGithubToken("")
       setSonarRepositoryURL("")
     }, [open])
     
@@ -116,6 +119,22 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
               type="text"
               fullWidth
               onChange = {(e) => {setGithubRepositoryURL(e.target.value)}}
+              required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SiGithub />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              margin="dense"
+              id="GithubToken"
+              label="Github Token"
+              type="text"
+              fullWidth
+              onChange = {(e) => {setGithubToken(e.target.value)}}
               required
               InputProps={{
                 startAdornment: (

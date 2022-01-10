@@ -51,8 +51,8 @@ public class ProjectController {
     }
 
     @GetMapping("/repository/github/check")
-    public ResponseEntity<String> checkGithubURL(@RequestParam("url") String url) {
-        if(repositoryService.checkGithubURL(url)) {
+    public ResponseEntity<String> checkGithubURL(@RequestParam("url") String url, @RequestParam("token") String token ) {
+        if(repositoryService.checkGithubURL(url, token)) {
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
         }
         else {
@@ -115,7 +115,7 @@ public class ProjectController {
     @PostMapping("/project/{projectId}/repository/github")
     public ResponseEntity<String> addGithubRepository(@RequestBody AddGithubRepositoryDTO addGithubRepositoryDTO) {
         try{
-            if(repositoryService.checkGithubURL(addGithubRepositoryDTO.getRepositoryURL())) {
+            if(repositoryService.checkGithubURL(addGithubRepositoryDTO.getRepositoryURL(), addGithubRepositoryDTO.getGithubToken())) {
                 if(projectService.addGithubRepo(addGithubRepositoryDTO)) {
                     return ResponseEntity.status(HttpStatus.OK).body(successMessage);
                 } else {

@@ -15,6 +15,7 @@ import {
 export default function AddRepositoryDialog({ open, reloadProjects, handleClose, projectId}) {
   const [type, setType] = useState(false)
   const [repositoryURL, setRepositoryURL] = useState("")
+  const [githubToken, setGithubToken] = useState(false)
   const jwtToken = localStorage.getItem("jwtToken")
 
   const addRepository = () => {
@@ -23,7 +24,8 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
     } else {
       let payload = {
         projectId: projectId,
-        repositoryURL : repositoryURL
+        repositoryURL : repositoryURL,
+        githubToken: githubToken
       }
       Axios.post(`http://localhost:9100/pvs-api/project/${projectId}/repository/${type}`, payload,
       { headers: {"Authorization" : `${jwtToken}`} })
@@ -40,6 +42,7 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
 
   useEffect(() => {
     setRepositoryURL("")
+    setGithubToken("")
   }, [open])
   
   return (
@@ -50,11 +53,11 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
             "To add a repository, please choose the type of repository and enter the repository URL here."
           </DialogContentText>
           <Select
-              value={type}
-              onChange = {(e) => {setType(e.target.value)}}>
-              <MenuItem value={"github"}>Github</MenuItem>
-              <MenuItem value={"sonar"}>Sonar</MenuItem>
-            </Select>
+            value={type}
+            onChange = {(e) => {setType(e.target.value)}}>
+            <MenuItem value={"github"}>Github</MenuItem>
+            <MenuItem value={"sonar"}>Sonar</MenuItem>
+          </Select>
           <TextField
             margin="dense"
             id="RepositoryURL"
@@ -63,6 +66,15 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
             fullWidth
             onChange = {(e) => {setRepositoryURL(e.target.value)}}
           />
+          { type == "github" ? <TextField
+            margin="dense"
+            id="GithubToken"
+            label="Github Token"
+            type="text"
+            fullWidth
+            onChange = {(e) => {setGithubToken(e.target.value)}}
+          /> : <></>}
+          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">

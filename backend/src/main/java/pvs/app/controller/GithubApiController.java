@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pvs.app.dto.GithubCommitDTO;
 import pvs.app.dto.GithubIssueDTO;
+import pvs.app.dto.PostCommitDTO;
 import pvs.app.service.GithubCommitService;
 import pvs.app.service.GithubApiService;
 
@@ -39,9 +40,11 @@ public class GithubApiController {
 
     @SneakyThrows
     @PostMapping("/github/commits/{repoOwner}/{repoName}")
-    public ResponseEntity<String> postCommits(@PathVariable("repoOwner") String repoOwner, @PathVariable("repoName") String repoName) {
+    public ResponseEntity<String> postCommits(@PathVariable("repoOwner") String repoOwner, @PathVariable("repoName") String repoName, @RequestBody PostCommitDTO postCommitDTO) {
         boolean callAPISuccess;
         Date lastUpdate;
+
+        githubApiService.setHeader(postCommitDTO.getGithubToken());
         GithubCommitDTO githubCommitDTO = githubCommitService.getLastCommit(repoOwner, repoName);
         if (null == githubCommitDTO) {
             Calendar calendar = Calendar.getInstance();
