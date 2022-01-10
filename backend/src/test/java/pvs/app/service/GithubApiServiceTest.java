@@ -142,6 +142,33 @@ public class GithubApiServiceTest {
     }
 
     @Test
+    public void getIssuesFromGithub_RunThread()  {
+        //given
+        List<GithubIssueDTO> result = new ArrayList<>();
+        mockWebServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody("{" +
+                        "    \"data\": {" +
+                        "        \"repository\": {" +
+                        "            \"issues\": {" +
+                        "                \"totalCount\": 1" +
+                        "            }" +
+                        "        }" +
+                        "    }" +
+                        "}")
+                .addHeader("Content-Type", "application/json")
+        );
+
+        //when
+        try {
+            result = githubApiService.getIssuesFromGithub("facebook", "react");
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        Assert.assertEquals(0, result.size());
+    }
+
+    @Test
     public void getIssuesFromGithub_notRunThread()  {
         //given
         List<GithubIssueDTO> result = new ArrayList<>();
