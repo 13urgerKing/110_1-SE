@@ -49,7 +49,7 @@ public class ProjectService {
         }
     }
 
-    public void delete(DeleteProjectDTO deleteProjectDTO) throws IOException {
+    public void delete(DeleteProjectDTO deleteProjectDTO) {
         projectDAO.deleteById(Long.parseLong(deleteProjectDTO.getProjectId()));
     }
 

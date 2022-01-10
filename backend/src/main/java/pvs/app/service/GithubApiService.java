@@ -177,7 +177,7 @@ public class GithubApiService {
                 }
             }
         } else {
-            return null;
+            return Collections.emptyList();
         }
         return githubIssueDTOList;
     }
