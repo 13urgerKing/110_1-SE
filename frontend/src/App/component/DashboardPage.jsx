@@ -40,21 +40,18 @@ function DashboardPage(props) {
     }, [])
 
     return (
-        <div className={classes.root}>
-            <ProjectAvatar 
-            size = "small" 
-            project={currentProject}
-            />
-            <p></p>
-            <h2>{currentProject ? currentProject.projectName : ""}</h2>
-            
-            <div className="base">
-              <div className="board">
-                <div className="board-lists" id="lists">
-                </div>
-              </div>
+      <div>
+        <h2>Trello Board</h2>
+
+
+        <div className="base">
+          <div className="board">
+            <div className="board-lists" id="lists">
             </div>
+          </div>
         </div>
+      </div>
+
     )
 }
 
