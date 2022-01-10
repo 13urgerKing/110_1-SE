@@ -101,6 +101,8 @@ public class ProjectService {
             repository.setToken(addGithubRepositoryDTO.getGithubToken());
             project.getRepositorySet().add(repository);
             String owner = url.split("/")[3];
+
+            githubApiService.setHeader(addGithubRepositoryDTO.getGithubToken());
             JsonNode responseJson = githubApiService.getAvatarURL(owner);
             if(null != responseJson) {
                 String json = responseJson.textValue();
