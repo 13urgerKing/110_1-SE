@@ -21,7 +21,7 @@ public class Repository {
     private String type;
 
     @NotNull
-    private String githubToken;
+    private String token;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "repository")
     private Set<GithubCommit> githubCommitSet;

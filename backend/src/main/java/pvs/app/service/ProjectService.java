@@ -67,7 +67,7 @@ public class ProjectService {
                 RepositoryDTO repositoryDTO = new RepositoryDTO();
                 repositoryDTO.setUrl(repository.getUrl());
                 repositoryDTO.setType(repository.getType());
-                repositoryDTO.setGithubToken(repository.getGithubToken());
+                repositoryDTO.setToken(repository.getToken());
                 projectDTO.getRepositoryDTOList().add(repositoryDTO);
             }
             projectDTOList.add(projectDTO);
@@ -98,7 +98,7 @@ public class ProjectService {
             Repository repository = new Repository();
             repository.setUrl(url);
             repository.setType("github");
-            repository.setGithubToken(addGithubRepositoryDTO.getGithubToken());
+            repository.setToken(addGithubRepositoryDTO.getGithubToken());
             project.getRepositorySet().add(repository);
             String owner = url.split("/")[3];
             JsonNode responseJson = githubApiService.getAvatarURL(owner);
