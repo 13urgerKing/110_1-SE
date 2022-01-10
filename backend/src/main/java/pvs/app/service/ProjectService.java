@@ -49,6 +49,10 @@ public class ProjectService {
         }
     }
 
+    public void delete(DeleteProjectDTO deleteProjectDTO) throws IOException {
+        projectDAO.deleteById(Long.parseLong(deleteProjectDTO.getProjectId()));
+    }
+
     public List<ResponseProjectDTO> getMemberProjects(Long memberId) {
         List<Project> projectList = projectDAO.findByMemberId(memberId);
         List<ResponseProjectDTO> projectDTOList = new ArrayList<>();
@@ -99,6 +103,30 @@ public class ProjectService {
                 String json = responseJson.textValue();
                 project.setAvatarURL(json);
             }
+            projectDAO.save(project);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deleteSonarRepo(DeleteSonarRepositoryDTO deleteSonarRepositoryDTO) {
+        Optional<Project> projectOptional = projectDAO.findById(deleteSonarRepositoryDTO.getProjectId());
+        if(projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            project.getRepositorySet().remove(project.findRepositoryByType("sonar"));
+            projectDAO.save(project);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deleteGithubRepo(DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) {
+        Optional<Project> projectOptional = projectDAO.findById(deleteGithubRepositoryDTO.getProjectId());
+        if(projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            project.getRepositorySet().remove(project.findRepositoryByType("github"));
             projectDAO.save(project);
             return true;
         } else {

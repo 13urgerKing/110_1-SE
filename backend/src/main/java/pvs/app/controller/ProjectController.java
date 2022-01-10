@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import pvs.app.dto.AddGithubRepositoryDTO;
 import pvs.app.dto.AddSonarRepositoryDTO;
 import pvs.app.dto.CreateProjectDTO;
+import pvs.app.dto.DeleteGithubRepositoryDTO;
+import pvs.app.dto.DeleteProjectDTO;
+import pvs.app.dto.DeleteSonarRepositoryDTO;
 import pvs.app.dto.ResponseProjectDTO;
 import pvs.app.service.ProjectService;
 import pvs.app.service.RepositoryService;
+import pvs.app.service.SonarApiService;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,10 +42,12 @@ public class ProjectController {
     
     private final ProjectService projectService;
     private final RepositoryService repositoryService;
+    private final SonarApiService sonarApiService;
 
-    public ProjectController(ProjectService projectService, RepositoryService repositoryService){
+    public ProjectController(ProjectService projectService, RepositoryService repositoryService, SonarApiService sonarApiService){
         this.projectService = projectService;
         this.repositoryService = repositoryService;
+        this.sonarApiService = sonarApiService;
     }
 
     @GetMapping("/repository/github/check")
@@ -56,7 +62,7 @@ public class ProjectController {
 
     @GetMapping("/repository/sonar/check")
     public ResponseEntity<String> checkSonarURL(@RequestParam("url") String url) {
-        if(repositoryService.checkSonarURL(url)) {
+        if(sonarApiService.checkSonarURL(url)) {
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
         }
         else {
@@ -76,10 +82,20 @@ public class ProjectController {
         }
     }
 
+    @PostMapping("/project/delete")
+    public ResponseEntity<String> deleteProject(@RequestBody DeleteProjectDTO deleteProjectDTO) {
+        try{
+            projectService.delete(deleteProjectDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+        }
+    }
+
     @PostMapping("/project/{projectId}/repository/sonar")
     public ResponseEntity<String> addSonarRepository(@RequestBody AddSonarRepositoryDTO addSonarRepositoryDTO) {
         try{
-            if(repositoryService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL())) {
+            if(sonarApiService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL())) {
                 if(projectService.addSonarRepo(addSonarRepositoryDTO)) {
                     return ResponseEntity.status(HttpStatus.OK).body(successMessage);
                 } else {
@@ -108,6 +124,32 @@ public class ProjectController {
             }
             else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(urlInvalidMessage);
+            }
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+        }
+    }
+
+    @PostMapping("/project/delete/repository/sonar")
+    public ResponseEntity<String> deleteSonarRepository(@RequestBody DeleteSonarRepositoryDTO deleteSonarRepositoryDTO) {
+        try{
+            if(projectService.deleteSonarRepo(deleteSonarRepositoryDTO)) {
+                return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
+            }
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+        }
+    }
+
+    @PostMapping("/project/delete/repository/github")
+    public ResponseEntity<String> deleteGithubRepository(@RequestBody DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) {
+        try{
+            if(projectService.deleteGithubRepo(deleteGithubRepositoryDTO)) {
+                return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
             }
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);

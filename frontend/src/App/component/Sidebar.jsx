@@ -31,6 +31,7 @@ import { GoIssueOpened } from 'react-icons/go'
 import { HiDocumentDuplicate } from 'react-icons/hi'
 import { SiGithub, SiSonarqube } from 'react-icons/si'
 import { RiDashboardFill } from 'react-icons/ri'
+import { RiDeleteBinLine } from 'react-icons/ri'
 import clsx from 'clsx'
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import MomentUtils from '@date-io/moment'
@@ -38,6 +39,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import { setStartMonth, setEndMonth } from './../../redux/action'
 import Axios from 'axios'
+import Typography from "@material-ui/core/Typography";
+import DeleteProjectDialog from './DeleteProjectDialog';
 
 const drawerWidth = 240
 const useStyles = makeStyles((theme) => ({
@@ -158,6 +161,12 @@ function Sidebar(prop) {
   const [currentProject, setCurrentProject] = useState(undefined)
   const [githubMenuOpen, setGithubMenuOpen] = useState(true)
   const [sonarMenuOpen, setSonarMenuOpen] = useState(true)
+  const [deleteProjectDialogOpen, setDeleteProjectDialogOpen] = useState(false)
+
+  const showDeleteProjectDialog = () => {
+
+    setDeleteProjectDialogOpen(true)
+  }
 
   const list = () => (
     <div className={classes.list} role="presentation" >
@@ -268,9 +277,21 @@ function Sidebar(prop) {
             </Collapse>
             </div>
           }
+          <Divider className={classes.divider} />
+            <ListItem button onClick={showDeleteProjectDialog}>
+              <ListItemIcon>
+                  <RiDeleteBinLine size={30} color="red"/>
+              </ListItemIcon>
+              <ListItemText primary={<Typography style={{ color: '#FF0000' }}>Delete Project</Typography>}/>
+            </ListItem>
         </div>
         }
       </List>
+      <DeleteProjectDialog
+      open={deleteProjectDialogOpen} 
+      handleClose={() => setDeleteProjectDialogOpen(false)}
+      projectId={prop.currentProjectId}
+      />
     </div>
   )
   

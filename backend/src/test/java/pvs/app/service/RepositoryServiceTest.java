@@ -11,11 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
 import pvs.app.Application;
-import pvs.app.dto.CodeCoverageDTO;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -36,18 +33,6 @@ public class RepositoryServiceTest {
                 .setBody("{}")
                 .addHeader("Content-Type", "application/json")
         );
-    }
-
-    @Test
-    public void checkSonarURL_thenReturnFalse() {
-        boolean exist = repositoryService.checkSonarURL("pvs-springboot");
-        Assert.assertFalse(exist);
-    }
-
-    @Test
-    public void checkSonarURL_thenReturnTrue() throws InterruptedException {
-        boolean exist = repositoryService.checkSonarURL("http://localhost:9000/dashboard");
-        Assert.assertTrue(true);
     }
 
     @Test
