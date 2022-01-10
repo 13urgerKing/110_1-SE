@@ -1,4 +1,4 @@
-package pvs.app.service.utils;
+package pvs.app.utils;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +12,6 @@ import org.springframework.util.DigestUtils;
 import pvs.app.Application;
 import pvs.app.entity.Member;
 import pvs.app.entity.Role;
-import pvs.app.utils.JwtTokenUtil;
 
 import java.io.IOException;
 import java.util.Set;
