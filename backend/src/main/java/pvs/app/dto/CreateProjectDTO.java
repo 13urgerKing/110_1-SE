@@ -8,4 +8,5 @@ public class CreateProjectDTO {
     private String githubRepositoryURL;
     private String sonarRepositoryURL;
     private String githubToken;
+    private String sonarToken;
 }
