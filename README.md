@@ -19,9 +19,14 @@ C:\Program Files (x86)\AdoptOpenJDK\jdk-11
 2. 安裝MAVEN並新增環境變數
 ```
 # 變數名稱
-MAVEN_OPTS
+MAVEN
 # 變數值
--Xms256m -Xmx512m
+%MAVEN_HOME%\bin
+
+# 變數名稱
+MAVEN_HOME
+# 變數值 (自己電腦的安裝路徑)
+C:\Program Files\apache-maven-3.6.3
 ```
 3. 安裝資料庫
 4. 修改application.yml內的postgresql參數
