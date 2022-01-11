@@ -2,6 +2,7 @@ package pvs.app.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +19,6 @@ import pvs.app.service.ProjectService;
 import pvs.app.service.RepositoryService;
 import pvs.app.service.SonarApiService;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,9 +73,7 @@ public class ProjectController {
         try {
             projectService.create(projectDTO);
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.debug(e.getMessage());
+        } catch (HibernateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
     }

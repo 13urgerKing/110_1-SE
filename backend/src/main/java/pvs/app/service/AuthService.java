@@ -2,6 +2,7 @@ package pvs.app.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +32,7 @@ public class AuthService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public String login(String username, String password) throws Exception {
+    public String login(String username, String password) throws HibernateException {
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username, password);
         Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);

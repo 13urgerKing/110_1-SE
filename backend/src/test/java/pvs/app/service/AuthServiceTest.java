@@ -1,5 +1,6 @@
 package pvs.app.service;
 
+import org.hibernate.HibernateException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +66,7 @@ public class AuthServiceTest {
         try {
             String jwtTocken = authService.login("test", "test");
             Assert.assertEquals("this is jwtToken", jwtTocken);
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             e.printStackTrace();
         }
     }

@@ -26,7 +26,7 @@ public class RepositoryServiceTest {
     @Before
     public void setup() throws IOException {
         this.mockWebServer = new MockWebServer();
-        this.repositoryService = new RepositoryService(WebClient.builder(), mockWebServer.url("/").toString());
+        this.repositoryService = new RepositoryService(WebClient.builder());
 
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(200)

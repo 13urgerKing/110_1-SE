@@ -104,12 +104,9 @@ public class ProjectServiceTest {
 
                 projectDTOList.add(projectDTO);
 
-                // when
                 when(projectDAO.findByMemberId(1L))
                                 .thenReturn(List.of(project));
-                // then
                 assertEquals(1, projectService.getMemberProjects(1L).size());
-                // assertTrue(projectDTOList.equals(projectService.getMemberProjects(1L)));
         }
 
         @Test

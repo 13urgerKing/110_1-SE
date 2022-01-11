@@ -3,6 +3,7 @@ package pvs.app.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 import pvs.app.dao.ProjectDAO;
 import pvs.app.dto.*;
@@ -27,8 +28,7 @@ public class ProjectService {
         this.githubApiService = githubApiService;
     }
 
-    public void create(CreateProjectDTO projectDTO) throws IOException {
-        Project savedProject;
+    public void create(CreateProjectDTO projectDTO) throws HibernateException {
         Project project = new Project();
         project.setMemberId(1L);
         project.setName(projectDTO.getProjectName());

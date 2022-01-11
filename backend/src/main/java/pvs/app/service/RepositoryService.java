@@ -2,7 +2,6 @@ package pvs.app.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,7 +15,7 @@ public class RepositoryService {
 
     static final Logger logger = LogManager.getLogger(RepositoryService.class.getName());
 
-    public RepositoryService(WebClient.Builder webClientBuilder, @Value("${webClient.baseUrl.test}") String baseUrl) {
+    public RepositoryService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
     }
 
