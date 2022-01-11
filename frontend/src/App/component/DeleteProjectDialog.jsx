@@ -21,7 +21,8 @@ export default function DeleteProjectDialog({ open, handleClose, projectId }) {
     let payload = {
       projectId: projectId
     }
-    Axios.post(`http://localhost:9100/pvs-api/project/delete/`, payload,
+    
+    Axios.post(`http://localhost:9100/pvs-api/project/delete`, payload,
       { headers: { "Authorization": `${jwtToken}` } })
       .then((response) => {
         history.push("/select")

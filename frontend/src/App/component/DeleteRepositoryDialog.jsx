@@ -20,35 +20,15 @@ export default function DeleteRepositoryDialog({ open, reloadProjects, handleClo
       projectId: projectId
     }
 
-    return (
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Delete Repository</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please Choose The Repository You Want To Delete
-          </DialogContentText>
-          <Select
-            value={type}
-            onChange={(e) => { setType(e.target.value) }}>
-            <MenuItem value=""><em>None</em> </MenuItem>
-            {
-              hasGithubRepo ? <MenuItem value={"github"}>Github</MenuItem> : null
-            }
-            {
-              hasSonarRepo ? <MenuItem value={"sonar"}>Sonar</MenuItem> : null
-            }
-          </Select>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={deleteRepository} color="primary" id="DeleteRepositoryBtn">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
+    Axios.post(`http://localhost:9100/pvs-api/project/delete/repository/${type}`, payload, { headers: {"Authorization" : `${jwtToken}`} })
+      .then((response) => {
+        reloadProjects()
+        handleClose()
+      })
+      .catch((e) => {
+        alert(e.response.status)
+        console.error(e)
+      })
   }
 
   return (
@@ -61,8 +41,13 @@ export default function DeleteRepositoryDialog({ open, reloadProjects, handleClo
         <Select
           value={type}
           onChange={(e) => { setType(e.target.value) }}>
-          <MenuItem value={"github"}>Github</MenuItem>
-          <MenuItem value={"sonar"}>Sonar</MenuItem>
+          <MenuItem value=""><em>None</em> </MenuItem>
+          {
+            hasGithubRepo ? <MenuItem value={"github"}>Github</MenuItem> : null
+          }
+          {
+            hasSonarRepo ? <MenuItem value={"sonar"}>Sonar</MenuItem> : null
+          }
         </Select>
       </DialogContent>
       <DialogActions>
