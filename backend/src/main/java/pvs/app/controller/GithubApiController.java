@@ -24,10 +24,9 @@ import java.util.List;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class GithubApiController {
-
     @Value("${message.exception}")
     private String exceptionMessage;
-    
+
     static final Logger logger = LogManager.getLogger(GithubApiController.class.getName());
 
     private final GithubApiService githubApiService;
@@ -40,7 +39,8 @@ public class GithubApiController {
 
     @SneakyThrows
     @PostMapping("/github/commits/{repoOwner}/{repoName}")
-    public ResponseEntity<String> postCommits(@PathVariable("repoOwner") String repoOwner, @PathVariable("repoName") String repoName, @RequestBody PostCommitDTO postCommitDTO) {
+    public ResponseEntity<String> postCommits(@PathVariable("repoOwner") String repoOwner,
+            @PathVariable("repoName") String repoName, @RequestBody PostCommitDTO postCommitDTO) {
         boolean callAPISuccess;
         Date lastUpdate;
 
@@ -54,27 +54,25 @@ public class GithubApiController {
             lastUpdate = githubCommitDTO.getCommittedDate();
         }
 
-        try{
+        try {
             callAPISuccess = githubApiService.getCommitsFromGithub(repoOwner, repoName, lastUpdate);
         } catch (InterruptedException | IOException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();
             logger.debug(e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(exceptionMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
 
-        if(callAPISuccess) {
+        if (callAPISuccess) {
             return ResponseEntity.status(HttpStatus.OK).body("success get commit data and save to database");
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("cannot get commit data");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot get commit data");
         }
     }
 
     @GetMapping("/github/commits/{repoOwner}/{repoName}")
-    public ResponseEntity<String> getCommits(@PathVariable("repoOwner") String repoOwner, @PathVariable("repoName") String repoName) {
-
+    public ResponseEntity<String> getCommits(@PathVariable("repoOwner") String repoOwner,
+            @PathVariable("repoName") String repoName) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         List<GithubCommitDTO> githubCommitDTOs = githubCommitService.getAllCommits(repoOwner, repoName);
@@ -83,45 +81,40 @@ public class GithubApiController {
 
         try {
             githubCommitDTOsJson = objectMapper.writeValueAsString(githubCommitDTOs);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(githubCommitDTOsJson);
+            return ResponseEntity.status(HttpStatus.OK).body(githubCommitDTOsJson);
         } catch (JsonProcessingException e) {
             logger.debug(e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(exceptionMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
     }
 
     @GetMapping("/github/issues/{repoOwner}/{repoName}")
-    public ResponseEntity<String> getIssues(@PathVariable("repoOwner") String repoOwner, @PathVariable("repoName") String repoName){
+    public ResponseEntity<String> getIssues(@PathVariable("repoOwner") String repoOwner,
+            @PathVariable("repoName") String repoName) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         List<GithubIssueDTO> githubIssueDTOs;
 
         try {
             githubIssueDTOs = githubApiService.getIssuesFromGithub(repoOwner, repoName);
-            if(null == githubIssueDTOs) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("cannot get issue data");
+            if (null == githubIssueDTOs) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot get issue data");
             }
         } catch (InterruptedException | IOException e) {
             logger.debug(e.getMessage());
             e.printStackTrace();
             Thread.currentThread().interrupt();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(exceptionMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
 
         try {
             String githubIssueDTOsJson = objectMapper.writeValueAsString(githubIssueDTOs);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(githubIssueDTOsJson);
+            return ResponseEntity.status(HttpStatus.OK).body(githubIssueDTOsJson);
         } catch (IOException e) {
             logger.debug(e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(exceptionMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
     }
 }

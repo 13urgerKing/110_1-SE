@@ -9,10 +9,10 @@ const selectedMonthReducer = (state = init, action) => {
     switch (action.type) {
         case "SET_START_MONTH":
             console.log(action)
-            return {...state, startMonth: action.startMonth}
+            return { ...state, startMonth: action.startMonth }
         case "SET_END_MONTH":
             console.log(action)
-            return {...state, endMonth: action.endMonth}
+            return { ...state, endMonth: action.endMonth }
         default:
             return state
     }

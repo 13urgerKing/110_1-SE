@@ -10,5 +10,4 @@ import java.util.Date;
 public class DuplicationDTO {
     Date date;
     Double value;
-
 }
