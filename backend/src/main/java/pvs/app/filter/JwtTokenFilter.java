@@ -1,7 +1,5 @@
 package pvs.app.filter;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,8 +19,6 @@ import java.io.IOException;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
-
-    static final Logger logger = LogManager.getLogger(JwtTokenFilter.class.getName());
 
     @Qualifier("userDetailsServiceImpl")
     @Autowired
@@ -46,7 +42,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-                if (jwtTokenUtil.validateToken(token, userDetails)) {
+                if (Boolean.TRUE.equals(jwtTokenUtil.validateToken(token, userDetails))) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(

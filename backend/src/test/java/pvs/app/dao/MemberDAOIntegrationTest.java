@@ -34,7 +34,7 @@ public class MemberDAOIntegrationTest {
     public void whenFindByAccount_thenReturnMember() {
         Member foundEntity = memberDAO.findByUsername("aaaa");
 
-        assertEquals(member01.getUsername(), "aaaa");
+        assertEquals("aaaa", member01.getUsername());
     }
 
     @Test

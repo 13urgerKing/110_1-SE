@@ -1,7 +1,5 @@
 package pvs.app.service.impl;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +19,6 @@ import pvs.app.dao.MemberDAO;
 import pvs.app.entity.Member;
 import pvs.app.entity.Role;
 
-import java.io.IOException;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
@@ -64,9 +61,9 @@ public class UserDetailServiceImplTest {
 
     @Test
     public void loadUserByUsername_notFound() {
-        // given
-        Mockito.when(mockMemberDAO.findByUsername("test")).thenThrow(new UsernameNotFoundException("not found"));
-        // when
+        //given
+        Mockito.when(mockMemberDAO.findByUsername("notFound")).thenThrow(new UsernameNotFoundException("not found"));
+        //when
         UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername("notFound");
         // then
         Assert.assertNull(userDetails);
