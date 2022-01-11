@@ -97,11 +97,12 @@ function CodeSmellsPage(prop) {
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-      <h2><a href={codeSmellUrl} target="blank">{dataForCodeSmellChart.data.codeSmell[dataForCodeSmellChart.data.codeSmell.length-1]}</a></h2>
+      
       <div className={classes.root}>
         <div style={{width: "67%"}}>
           <div>
             <h1>Code Smells</h1>
+            <h2><a href={codeSmellUrl} target="blank">{dataForCodeSmellChart.data.codeSmell[dataForCodeSmellChart.data.codeSmell.length-1]}</a></h2>
             <div>
               <DrawingBoard data={dataForCodeSmellChart} maxBoardY={Math.max(...dataForCodeSmellChart.data.codeSmell)+5} id="code-smells-chart"/>
             </div>

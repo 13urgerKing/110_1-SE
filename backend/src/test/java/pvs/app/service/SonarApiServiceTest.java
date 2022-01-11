@@ -38,13 +38,13 @@ public class SonarApiServiceTest {
 
     @Test
     public void checkSonarURL_thenReturnFalse() {
-        boolean exist = sonarApiService.checkSonarURL("pvs-springboot", System.getenv("PVS_SONAR_TOKEN"));
+        boolean exist = sonarApiService.checkSonarURL("pvs-springboot", "");
         Assert.assertFalse(exist);
     }
 
     @Test
     public void checkSonarURL_thenReturnTrue() throws InterruptedException {
-        boolean exist = sonarApiService.checkSonarURL("http://localhost:9000/dashboard", System.getenv("PVS_SONAR_TOKEN"));
+        boolean exist = sonarApiService.checkSonarURL("http://localhost:9000/dashboard", "");
         Assert.assertTrue(true);
     }
 
@@ -55,7 +55,7 @@ public class SonarApiServiceTest {
                 .setBody("{\"measures\":[{\"history\":[{\"date\":\"2020-11-20T19:38:25+0800\", \"value\":\"22.5\"}]}]}")
                 .addHeader("Content-Type", "application/json")
         );
-        List<CodeCoverageDTO> data = sonarApiService.getSonarCodeCoverage("pvs-springboot", System.getenv("PVS_SONAR_TOKEN"));
+        List<CodeCoverageDTO> data = sonarApiService.getSonarCodeCoverage("pvs-springboot", "");
         Assert.assertEquals(Double.valueOf(22.5), data.get(0).getValue());
     }
 
@@ -66,7 +66,7 @@ public class SonarApiServiceTest {
                 .setBody("{\"measures\":[{\"history\":[{\"date\":\"2020-11-20T19:38:25+0800\", \"value\":\"22\"}]}]}")
                 .addHeader("Content-Type", "application/json")
         );
-        List<BugDTO> data = sonarApiService.getSonarBug("pvs-springboot", System.getenv("PVS_SONAR_TOKEN"));
+        List<BugDTO> data = sonarApiService.getSonarBug("pvs-springboot", "");
         Assert.assertEquals(Integer.valueOf(22), data.get(0).getValue());
     }
 
@@ -77,7 +77,7 @@ public class SonarApiServiceTest {
                 .setBody("{\"measures\":[{\"history\":[{\"date\":\"2020-11-20T19:38:25+0800\", \"value\":\"22\"}]}]}")
                 .addHeader("Content-Type", "application/json")
         );
-        List<CodeSmellDTO> data = sonarApiService.getSonarCodeSmell("pvs-springboot", System.getenv("PVS_SONAR_TOKEN"));
+        List<CodeSmellDTO> data = sonarApiService.getSonarCodeSmell("pvs-springboot", "");
         Assert.assertEquals(Integer.valueOf(22), data.get(0).getValue());
     }
 
@@ -88,7 +88,7 @@ public class SonarApiServiceTest {
                 .setBody("{\"measures\":[{\"history\":[{\"date\":\"2020-11-20T19:38:25+0800\", \"value\":\"22.5\"}]}]}")
                 .addHeader("Content-Type", "application/json")
         );
-        List<DuplicationDTO> data = sonarApiService.getDuplication("pvs-springboot", System.getenv("PVS_SONAR_TOKEN"));
+        List<DuplicationDTO> data = sonarApiService.getDuplication("pvs-springboot", "");
         Assert.assertEquals(Double.valueOf(22.5), data.get(0).getValue());
     }
 }

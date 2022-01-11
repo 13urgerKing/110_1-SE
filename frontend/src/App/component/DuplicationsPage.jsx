@@ -98,11 +98,12 @@ function DuplicationsPage(prop) {
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-      <h2><a href={duplicationUrl} target="blank">{dataForDuplicationChart.data.duplication[dataForDuplicationChart.data.duplication.length-1]}%</a></h2>
+      
       <div className={classes.root}>
         <div style={{width: "67%"}}>
           <div>
             <h1>Duplications</h1>
+            <h2><a href={duplicationUrl} target="blank">{dataForDuplicationChart.data.duplication[dataForDuplicationChart.data.duplication.length-1]}%</a></h2>
             <div>
               <DrawingBoard data={dataForDuplicationChart} maxBoardY={100} id="duplications-chart"/>
             </div>

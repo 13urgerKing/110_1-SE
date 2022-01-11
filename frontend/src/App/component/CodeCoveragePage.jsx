@@ -94,11 +94,12 @@ function CodeCoveragePage(prop) {
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-      <h2><a href={coverageUrl} target="blank">{dataForCoverageChart.data.coverage[dataForCoverageChart.data.coverage.length-1]}%</a></h2>
+
       <div className={classes.root}>
         <div style={{width: "67%"}}>
           <div>
             <h1>Code Coverage</h1>
+            <h2><a href={coverageUrl} target="blank">{dataForCoverageChart.data.coverage[dataForCoverageChart.data.coverage.length-1]}%</a></h2>
             <div>
               <DrawingBoard data={dataForCoverageChart} maxBoardY={100} id="code-coverage-chart"/>
             </div>
