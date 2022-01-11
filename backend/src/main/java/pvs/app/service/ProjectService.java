@@ -43,12 +43,12 @@ public class ProjectService {
         List<Project> projectList = projectDAO.findByMemberId(memberId);
         List<ResponseProjectDTO> projectDTOList = new ArrayList<>();
 
-        for (Project project:projectList) {
+        for (Project project : projectList) {
             ResponseProjectDTO projectDTO = new ResponseProjectDTO();
             projectDTO.setProjectId(project.getProjectId());
             projectDTO.setProjectName(project.getName());
             projectDTO.setAvatarURL(project.getAvatarURL());
-            for(Repository repository: project.getRepositorySet()) {
+            for (Repository repository : project.getRepositorySet()) {
                 RepositoryDTO repositoryDTO = new RepositoryDTO();
                 repositoryDTO.setUrl(repository.getUrl());
                 repositoryDTO.setType(repository.getType());
@@ -62,7 +62,7 @@ public class ProjectService {
 
     public boolean addSonarRepo(AddSonarRepositoryDTO addSonarRepositoryDTO) {
         Optional<Project> projectOptional = projectDAO.findById(addSonarRepositoryDTO.getProjectId());
-        if(projectOptional.isPresent()) {
+        if (projectOptional.isPresent()) {
             Project project = projectOptional.get();
             Repository repository = new Repository();
             repository.setUrl(addSonarRepositoryDTO.getRepositoryURL());
@@ -78,7 +78,7 @@ public class ProjectService {
 
     public boolean addGithubRepo(AddGithubRepositoryDTO addGithubRepositoryDTO) throws IOException {
         Optional<Project> projectOptional = projectDAO.findById(addGithubRepositoryDTO.getProjectId());
-        if(projectOptional.isPresent()) {
+        if (projectOptional.isPresent()) {
             Project project = projectOptional.get();
             String url = addGithubRepositoryDTO.getRepositoryURL();
             Repository repository = new Repository();
@@ -90,7 +90,7 @@ public class ProjectService {
 
             githubApiService.setHeader(addGithubRepositoryDTO.getToken());
             JsonNode responseJson = githubApiService.getAvatarURL(owner);
-            if(null != responseJson) {
+            if (null != responseJson) {
                 String json = responseJson.textValue();
                 project.setAvatarURL(json);
             }
@@ -103,7 +103,7 @@ public class ProjectService {
 
     public boolean deleteSonarRepo(DeleteSonarRepositoryDTO deleteSonarRepositoryDTO) {
         Optional<Project> projectOptional = projectDAO.findById(deleteSonarRepositoryDTO.getProjectId());
-        if(projectOptional.isPresent()) {
+        if (projectOptional.isPresent()) {
             Project project = projectOptional.get();
             project.getRepositorySet().remove(project.findRepositoryByType("sonar"));
             projectDAO.save(project);
@@ -115,7 +115,7 @@ public class ProjectService {
 
     public boolean deleteGithubRepo(DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) {
         Optional<Project> projectOptional = projectDAO.findById(deleteGithubRepositoryDTO.getProjectId());
-        if(projectOptional.isPresent()) {
+        if (projectOptional.isPresent()) {
             Project project = projectOptional.get();
             project.getRepositorySet().remove(project.findRepositoryByType("github"));
             projectDAO.save(project);

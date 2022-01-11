@@ -16,7 +16,6 @@ public class GithubCommitService {
 
     static final Logger logger = LogManager.getLogger(GithubCommitService.class.getName());
 
-
     private final GithubCommitDAO githubCommitDAO;
     private final ModelMapper modelMapper;
 
@@ -43,8 +42,9 @@ public class GithubCommitService {
     }
 
     public GithubCommitDTO getLastCommit(String repoOwner, String repoName) {
-        GithubCommit githubCommit = githubCommitDAO.findFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc(repoOwner, repoName);
-        if(null == githubCommit) {
+        GithubCommit githubCommit = githubCommitDAO.findFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc(repoOwner,
+                repoName);
+        if (null == githubCommit) {
             return null;
         }
         GithubCommitDTO dto = modelMapper.map(githubCommit, GithubCommitDTO.class);

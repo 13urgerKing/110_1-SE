@@ -25,7 +25,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectController {
-    
     static final Logger logger = LogManager.getLogger(ProjectController.class.getName());
 
     @Value("${message.exception}")
@@ -39,12 +38,13 @@ public class ProjectController {
 
     @Value("${message.fail}")
     private String failMessage;
-    
+
     private final ProjectService projectService;
     private final RepositoryService repositoryService;
     private final SonarApiService sonarApiService;
 
-    public ProjectController(ProjectService projectService, RepositoryService repositoryService, SonarApiService sonarApiService){
+    public ProjectController(ProjectService projectService, RepositoryService repositoryService,
+            SonarApiService sonarApiService) {
         this.projectService = projectService;
         this.repositoryService = repositoryService;
         this.sonarApiService = sonarApiService;
@@ -52,27 +52,25 @@ public class ProjectController {
 
     @GetMapping("/repository/github/check")
     public ResponseEntity<String> checkGithubURL(@RequestParam("url") String url, @RequestParam("token") String token) {
-        if(repositoryService.checkGithubURL(url, token)) {
+        if (repositoryService.checkGithubURL(url, token)) {
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
-        }
-        else {
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(urlInvalidMessage);
         }
     }
 
     @GetMapping("/repository/sonar/check")
     public ResponseEntity<String> checkSonarURL(@RequestParam("url") String url, @RequestParam("token") String token) {
-        if(sonarApiService.checkSonarURL(url, token)) {
+        if (sonarApiService.checkSonarURL(url, token)) {
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
-        }
-        else {
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(urlInvalidMessage);
         }
     }
 
     @PostMapping("/project")
     public ResponseEntity<String> createProject(@RequestBody CreateProjectDTO projectDTO) {
-        try{
+        try {
             projectService.create(projectDTO);
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
         } catch (IOException e) {
@@ -84,28 +82,28 @@ public class ProjectController {
 
     @PostMapping("/project/delete")
     public ResponseEntity<String> deleteProject(@RequestBody DeleteProjectDTO deleteProjectDTO) {
-        try{
+        try {
             projectService.delete(deleteProjectDTO);
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
     }
 
     @PostMapping("/project/{projectId}/repository/sonar")
     public ResponseEntity<String> addSonarRepository(@RequestBody AddSonarRepositoryDTO addSonarRepositoryDTO) {
-        try{
-            if(sonarApiService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL(), addSonarRepositoryDTO.getToken())) {
-                if(projectService.addSonarRepo(addSonarRepositoryDTO)) {
+        try {
+            if (sonarApiService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL(),
+                    addSonarRepositoryDTO.getToken())) {
+                if (projectService.addSonarRepo(addSonarRepositoryDTO)) {
                     return ResponseEntity.status(HttpStatus.OK).body(successMessage);
                 } else {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
                 }
-            }
-            else {
+            } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(urlInvalidMessage);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             logger.debug(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
@@ -114,74 +112,65 @@ public class ProjectController {
 
     @PostMapping("/project/{projectId}/repository/github")
     public ResponseEntity<String> addGithubRepository(@RequestBody AddGithubRepositoryDTO addGithubRepositoryDTO) {
-        try{
-            if(repositoryService.checkGithubURL(addGithubRepositoryDTO.getRepositoryURL(), addGithubRepositoryDTO.getToken())) {
-                if(projectService.addGithubRepo(addGithubRepositoryDTO)) {
+        try {
+            if (repositoryService.checkGithubURL(addGithubRepositoryDTO.getRepositoryURL(),
+                    addGithubRepositoryDTO.getToken())) {
+                if (projectService.addGithubRepo(addGithubRepositoryDTO)) {
                     return ResponseEntity.status(HttpStatus.OK).body(successMessage);
                 } else {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
                 }
-            }
-            else {
+            } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(urlInvalidMessage);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
     }
 
     @PostMapping("/project/delete/repository/sonar")
-    public ResponseEntity<String> deleteSonarRepository(@RequestBody DeleteSonarRepositoryDTO deleteSonarRepositoryDTO) {
-        try{
-            if(projectService.deleteSonarRepo(deleteSonarRepositoryDTO)) {
+    public ResponseEntity<String> deleteSonarRepository(
+            @RequestBody DeleteSonarRepositoryDTO deleteSonarRepositoryDTO) {
+        try {
+            if (projectService.deleteSonarRepo(deleteSonarRepositoryDTO)) {
                 return ResponseEntity.status(HttpStatus.OK).body(successMessage);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
     }
 
     @PostMapping("/project/delete/repository/github")
-    public ResponseEntity<String> deleteGithubRepository(@RequestBody DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) {
-        try{
-            if(projectService.deleteGithubRepo(deleteGithubRepositoryDTO)) {
+    public ResponseEntity<String> deleteGithubRepository(
+            @RequestBody DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) {
+        try {
+            if (projectService.deleteGithubRepo(deleteGithubRepositoryDTO)) {
                 return ResponseEntity.status(HttpStatus.OK).body(successMessage);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
         }
     }
-
 
     @GetMapping("/project/{memberId}")
     public ResponseEntity<List<ResponseProjectDTO>> readMemberAllProjects(@PathVariable Long memberId) {
         List<ResponseProjectDTO> projectList = projectService.getMemberProjects(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(projectList);
-        //-/-/-/-/-/-/-/-/-/-/
-        //    0        0    //
-        //         3        //
-        //////////\\\\\\\\\\\\
     }
 
     @GetMapping("/project/{memberId}/{projectId}")
-    public ResponseEntity<ResponseProjectDTO> readSelectedProject
-            (@PathVariable Long memberId, @PathVariable Long projectId) {
+    public ResponseEntity<ResponseProjectDTO> readSelectedProject(@PathVariable Long memberId,
+            @PathVariable Long projectId) {
         List<ResponseProjectDTO> projectList = projectService.getMemberProjects(memberId);
-        Optional<ResponseProjectDTO> selectedProject =
-                projectList.stream()
-                           .filter(project -> project.getProjectId().equals(projectId))
-                           .findFirst();
+        Optional<ResponseProjectDTO> selectedProject = projectList.stream()
+                .filter(project -> project.getProjectId().equals(projectId))
+                .findFirst();
 
         return selectedProject.map(responseProjectDTO -> ResponseEntity.status(HttpStatus.OK).body(responseProjectDTO))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null));
-
-        //-/-/-/-/-/-/-/-/-/-/
-        //    0        0    //
-        //         3        //
-        //////////\\\\\\\\\\\\
     }
 }

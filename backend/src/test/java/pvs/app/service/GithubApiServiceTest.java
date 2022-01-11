@@ -1,6 +1,5 @@
 package pvs.app.service;
 
-
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.Assert;
@@ -35,12 +34,13 @@ public class GithubApiServiceTest {
     @Before
     public void setup() {
         this.mockWebServer = new MockWebServer();
-        this.githubApiService = new GithubApiService(WebClient.builder(), mockWebServer.url("/").toString(), githubCommitService);
+        this.githubApiService = new GithubApiService(WebClient.builder(), mockWebServer.url("/").toString(),
+                githubCommitService);
     }
 
     @Test
     public void getCommitsFromGithub_notRunThread() throws ParseException {
-        //given
+        // given
         boolean result = false;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date lastDate = dateFormat.parse("2020-11-20 19:38:25");
@@ -63,10 +63,9 @@ public class GithubApiServiceTest {
                         "        }" +
                         "    }" +
                         "}")
-                .addHeader("Content-Type", "application/json")
-        );
+                .addHeader("Content-Type", "application/json"));
 
-        //when
+        // when
         try {
             result = githubApiService.getCommitsFromGithub("facebook", "react", lastDate);
         } catch (IOException | InterruptedException e) {
@@ -77,7 +76,7 @@ public class GithubApiServiceTest {
 
     @Test
     public void getCommitsFromGithub_runThread() throws ParseException {
-        //given
+        // given
         boolean result = false;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date lastDate = dateFormat.parse("2020-11-20 19:38:25");
@@ -100,8 +99,7 @@ public class GithubApiServiceTest {
                         "        }" +
                         "    }" +
                         "}")
-                .addHeader("Content-Type", "application/json")
-        );
+                .addHeader("Content-Type", "application/json"));
 
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(200)
@@ -129,10 +127,9 @@ public class GithubApiServiceTest {
                         "        }\n" +
                         "    }\n" +
                         "}")
-                .addHeader("Content-Type", "application/json")
-        );
+                .addHeader("Content-Type", "application/json"));
 
-        //when
+        // when
         try {
             result = githubApiService.getCommitsFromGithub("facebook", "react", lastDate);
         } catch (IOException | InterruptedException e) {
@@ -183,10 +180,9 @@ public class GithubApiServiceTest {
                         "        }" +
                         "    }" +
                         "}")
-                .addHeader("Content-Type", "application/json")
-        );
+                .addHeader("Content-Type", "application/json"));
 
-        //when
+        // when
         try {
             result = githubApiService.getIssuesFromGithub("facebook", "react");
         } catch (IOException | InterruptedException e) {
@@ -197,7 +193,7 @@ public class GithubApiServiceTest {
 
     @Test
     public void getAvatarURL() {
-        //given
+        // given
         String avatarURL = null;
 
         mockWebServer.enqueue(new MockResponse()
@@ -208,17 +204,17 @@ public class GithubApiServiceTest {
                         "            \"edges\": [" +
                         "                {" +
                         "                    \"node\": {" +
-                        "                        \"avatarUrl\": \"https://avatars3.githubusercontent.com/u/69631?v=4\"" +
+                        "                        \"avatarUrl\": \"https://avatars3.githubusercontent.com/u/69631?v=4\""
+                        +
                         "                    }" +
                         "                }" +
                         "            ]" +
                         "        }" +
                         "    }" +
                         "}")
-                .addHeader("Content-Type", "application/json")
-        );
+                .addHeader("Content-Type", "application/json"));
 
-        //when
+        // when
         try {
             avatarURL = githubApiService.getAvatarURL("facebook").textValue();
         } catch (IOException e) {
