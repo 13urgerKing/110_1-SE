@@ -97,14 +97,15 @@ function BugsPage(prop) {
           project={currentProject}
         />}
         <p>
-          <h2>{currentProject ? currentProject.projectName : ""}</h2>
+          <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-      <h2 id="number-of-sonar"><a href={bugUrl} target="blank">{dataForBugChart.data.bug[dataForBugChart.data.bug.length-1]}</a></h2>
+
       <div className={classes.root}>
         <div style={{width: "67%"}}>
           <div>
             <h1>Bugs</h1>
+            <h2><a href={bugUrl} target="blank">{dataForBugChart.data.bug[dataForBugChart.data.bug.length-1]}</a></h2>
             <div>
               <DrawingBoard data={dataForBugChart} maxBoardY={Math.max(...dataForBugChart.data.bug)+5} id="bugs-chart"/>
             </div>

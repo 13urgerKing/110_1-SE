@@ -43,7 +43,7 @@ public class RepositoryServiceTest {
 
     @Test
     public void checkGithubURL_thenReturnTrue() throws InterruptedException {
-        boolean exist = repositoryService.checkGithubURL("https://github.com/imper0502/pvs-spring-boot", System.getenv("PVS_GITHUB_TOKEN"));
+        boolean exist = repositoryService.checkGithubURL("https://github.com/imper0502/pvs-spring-boot", "");
         Assert.assertTrue(true);
     }
 

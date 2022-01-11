@@ -33,12 +33,11 @@ public class GithubApiService {
     private final GithubCommitService githubCommitService;
 
     public GithubApiService(WebClient.Builder webClientBuilder, @Value("${webClient.baseUrl.github}") String baseUrl, GithubCommitService githubCommitService) {
-        String token = System.getenv("PVS_GITHUB_TOKEN");
         this.githubCommitService = githubCommitService;
         this.webClientBuilder = webClientBuilder;
         this.baseUrl = baseUrl;
         this.defaultWebClient = this.webClientBuilder.baseUrl(baseUrl)
-                .defaultHeader("Authorization", "Bearer " + token)
+                .defaultHeader("Authorization", "Bearer ")
                 .build();
     }
 

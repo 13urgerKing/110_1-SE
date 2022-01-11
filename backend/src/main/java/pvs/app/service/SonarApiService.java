@@ -30,9 +30,8 @@ public class SonarApiService {
     private final DateTimeFormatter isoParser;
 
     public SonarApiService(WebClient.Builder webClientBuilder, @Value("${webClient.baseUrl.sonar}") String baseUrl) {
-        String token = System.getenv("PVS_SONAR_TOKEN") + ":";
         this.webClient = webClientBuilder.baseUrl(baseUrl)
-                .defaultHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(token.getBytes()))
+                .defaultHeader("Authorization", "Basic ")
                 .build();
         isoParser = ISODateTimeFormat.dateTimeNoMillis().withLocale(Locale.TAIWAN);
     }

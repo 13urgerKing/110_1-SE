@@ -12,15 +12,15 @@ import {
   Button
 } from '@material-ui/core'
 
-export default function AddRepositoryDialog({ open, reloadProjects, handleClose, projectId}) {
-  const [type, setType] = useState(false)
+export default function AddRepositoryDialog({ open, reloadProjects, handleClose, projectId, wantedRepoType}) {
+  const [type, setType] = useState("")
   const [repositoryURL, setRepositoryURL] = useState("")
   const [token, setToken] = useState(false)
   const jwtToken = localStorage.getItem("jwtToken")
 
   const addRepository = () => {
     if(repositoryURL === "") {
-      alert("不準啦馬的>///<")
+      alert("網址不能為空")
     } else {
       let payload = {
         projectId: projectId,
@@ -28,15 +28,19 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
         token: token,
       }
       Axios.post(`http://localhost:9100/pvs-api/project/${projectId}/repository/${type}`, payload,
-      { headers: {"Authorization" : `${jwtToken}`} })
-          .then((response) => {
-            reloadProjects()
-            handleClose()
-          })
-          .catch((e) => {
-            alert(e.response.status)
-            console.error(e)
-          }) 
+        { 
+          headers: {"Authorization" : `${jwtToken}`} 
+        }
+      )
+      .then((response) => {
+        reloadProjects()
+        handleClose()
+        setType("");
+      })
+      .catch((e) => {
+        alert(e.response.status)
+        console.error(e)
+      }) 
     }
   }
 
@@ -54,33 +58,47 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
           </DialogContentText>
           <Select
             value={type}
+            defaultValue={"github"}
             onChange = {(e) => {setType(e.target.value)}}>
-            <MenuItem value={"github"}>Github</MenuItem>
-            <MenuItem value={"sonar"}>Sonar</MenuItem>
+            <MenuItem value=""><em>None</em> </MenuItem>
+            {
+              wantedRepoType !== "sonar" ? <MenuItem value={"github"}>Github</MenuItem> : null
+            }
+            {
+              wantedRepoType !== "github" ? <MenuItem value={"sonar"}>Sonar</MenuItem> : null
+            }
           </Select>
-          <TextField
-            margin="dense"
-            id="RepositoryURL"
-            label="Repository URL"
-            type="text"
-            fullWidth
-            onChange = {(e) => {setRepositoryURL(e.target.value)}}
-          />
-          { type == "github" ? <TextField
-            margin="dense"
-            id="GithubToken"
-            label="Github Token"
-            type="text"
-            fullWidth
-            onChange = {(e) => {setToken(e.target.value)}}
-          /> : <TextField
-          margin="dense"
-          id="SonarToken"
-          label="Sonar Token"
-          type="text"
-          fullWidth
-          onChange = {(e) => {setToken(e.target.value)}}
-          />}
+          {
+            type == "" ? null : <TextField
+              margin="dense"
+              id="RepositoryURL"
+              label="Repository URL"
+              type="text"
+              fullWidth
+              onChange = {(e) => {setRepositoryURL(e.target.value)}}
+            />
+          }
+          
+          { 
+            type == "github" ? <TextField
+              margin="dense"
+              id="GithubToken"
+              label="Github Token"
+              type="text"
+              fullWidth
+              onChange = {(e) => {setToken(e.target.value)}}
+            /> : null
+          }
+          {
+            type == "sonar" ? <TextField
+              margin="dense"
+              id="SonarToken"
+              label="Sonar Token"
+              type="text"
+              fullWidth
+              onChange = {(e) => {setToken(e.target.value)}}
+            /> : null
+          }
           
         </DialogContent>
         <DialogActions>
