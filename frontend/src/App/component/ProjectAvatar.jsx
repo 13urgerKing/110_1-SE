@@ -39,7 +39,7 @@ function ProjectAvatar(props) {
 
   const [addRepoDialogOpen, setAddRepoDialogOpen] = useState(false)
   const [deleteRepoDialogOpen, setDeleteRepoDialogOpen] = useState(false)
-  const [wantedRepoType, setWantedRepoType] = useState("")
+  const [wantedRepoType, setWantedRepoType] = useState(false)
   const [hasGithubRepo, setHasGithubRepo] = useState(false)
   const [hasSonarRepo, setHasSonarRepo] = useState(false)
 
@@ -55,6 +55,8 @@ function ProjectAvatar(props) {
         setWantedRepoType("sonar")
       } else if (sonarRepo != undefined) {
         setWantedRepoType("github")
+      } else {
+        setWantedRepoType("both")
       }
     }
   }, [props.project])
@@ -126,12 +128,15 @@ function ProjectAvatar(props) {
       reloadProjects={props.reloadProjects}
       handleClose={() => setAddRepoDialogOpen(false)}
       projectId={props.project.projectId}
+      wantedRepoType={wantedRepoType}
     />
     <DeleteRepositoryDialog
       open={deleteRepoDialogOpen} 
       reloadProjects={props.reloadProjects}
       handleClose={() => setDeleteRepoDialogOpen(false)}
       projectId={props.project.projectId}
+      hasGithubRepo={hasGithubRepo}
+      hasSonarRepo={hasSonarRepo}
     />
   </div>//:()
   )
