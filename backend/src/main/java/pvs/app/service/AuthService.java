@@ -31,7 +31,7 @@ public class AuthService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public String login(String username, String password) {
+    public String login(String username, String password) throws Exception {
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken( username, password );
         Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);

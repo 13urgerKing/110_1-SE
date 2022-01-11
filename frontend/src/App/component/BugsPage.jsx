@@ -57,9 +57,10 @@ function BugsPage(prop) {
     handleToggle()
     if(currentProject != undefined){
       let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
+      let sonarToken = repositoryDTO.token
       let sonarComponent = repositoryDTO.url.split("id=")[1]
       setBugUrl(`http://localhost:9000/project/issues?id=${sonarComponent}&resolved=false&types=BUG`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/bug`,
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/bug?token=${sonarToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setBugList(response.data)
@@ -96,14 +97,15 @@ function BugsPage(prop) {
           project={currentProject}
         />}
         <p>
-          <h2>{currentProject ? currentProject.projectName : ""}</h2>
+          <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-      <h2 id="number-of-sonar"><a href={bugUrl} target="blank">{dataForBugChart.data.bug[dataForBugChart.data.bug.length-1]}</a></h2>
+
       <div className={classes.root}>
         <div style={{width: "67%"}}>
           <div>
             <h1>Bugs</h1>
+            <h2><a href={bugUrl} target="blank">{dataForBugChart.data.bug[dataForBugChart.data.bug.length-1]}</a></h2>
             <div>
               <DrawingBoard data={dataForBugChart} maxBoardY={Math.max(...dataForBugChart.data.bug)+5} id="bugs-chart"/>
             </div>

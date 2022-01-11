@@ -54,9 +54,10 @@ function CodeCoveragePage(prop) {
     handleToggle()
     if(currentProject != undefined){
       let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
+      let sonarToken = repositoryDTO.token
       let sonarComponent = repositoryDTO.url.split("id=")[1]    
       setCoverageUrl(`http://localhost:9000/component_measures?id=${sonarComponent}&metric=Coverage&view=list`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/coverage`,
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/coverage?token=${sonarToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setCoverageList(response.data)
@@ -93,11 +94,12 @@ function CodeCoveragePage(prop) {
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-      <h2><a href={coverageUrl} target="blank">{dataForCoverageChart.data.coverage[dataForCoverageChart.data.coverage.length-1]}%</a></h2>
+
       <div className={classes.root}>
         <div style={{width: "67%"}}>
           <div>
             <h1>Code Coverage</h1>
+            <h2><a href={coverageUrl} target="blank">{dataForCoverageChart.data.coverage[dataForCoverageChart.data.coverage.length-1]}%</a></h2>
             <div>
               <DrawingBoard data={dataForCoverageChart} maxBoardY={100} id="code-coverage-chart"/>
             </div>

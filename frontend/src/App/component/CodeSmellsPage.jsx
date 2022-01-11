@@ -55,9 +55,10 @@ function CodeSmellsPage(prop) {
     handleToggle()
     if(currentProject != undefined) {
       let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
+      let sonarToken = repositoryDTO.token
       let sonarComponent = repositoryDTO.url.split("id=")[1] 
       setCodeSmellUrl(`http://localhost:9000/project/issues?id=${sonarComponent}&resolved=false&types=CODE_SMELL`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/code_smell`,
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/code_smell?token=${sonarToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setCodeSmellList(response.data)
@@ -96,11 +97,12 @@ function CodeSmellsPage(prop) {
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-      <h2><a href={codeSmellUrl} target="blank">{dataForCodeSmellChart.data.codeSmell[dataForCodeSmellChart.data.codeSmell.length-1]}</a></h2>
+      
       <div className={classes.root}>
         <div style={{width: "67%"}}>
           <div>
             <h1>Code Smells</h1>
+            <h2><a href={codeSmellUrl} target="blank">{dataForCodeSmellChart.data.codeSmell[dataForCodeSmellChart.data.codeSmell.length-1]}</a></h2>
             <div>
               <DrawingBoard data={dataForCodeSmellChart} maxBoardY={Math.max(...dataForCodeSmellChart.data.codeSmell)+5} id="code-smells-chart"/>
             </div>

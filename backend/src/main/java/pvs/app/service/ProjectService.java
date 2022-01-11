@@ -32,21 +32,7 @@ public class ProjectService {
         Project project = new Project();
         project.setMemberId(1L);
         project.setName(projectDTO.getProjectName());
-        savedProject = projectDAO.save(project);
-
-        if(!projectDTO.getGithubRepositoryURL().equals("")){
-            AddGithubRepositoryDTO addGithubRepositoryDTO = new AddGithubRepositoryDTO();
-            addGithubRepositoryDTO.setProjectId(savedProject.getProjectId());
-            addGithubRepositoryDTO.setRepositoryURL(projectDTO.getGithubRepositoryURL());
-            addGithubRepo(addGithubRepositoryDTO);
-        }
-
-        if(!projectDTO.getSonarRepositoryURL().equals("")){
-            AddSonarRepositoryDTO addSonarRepositoryDTO = new AddSonarRepositoryDTO();
-            addSonarRepositoryDTO.setProjectId(savedProject.getProjectId());
-            addSonarRepositoryDTO.setRepositoryURL(projectDTO.getSonarRepositoryURL());
-            addSonarRepo(addSonarRepositoryDTO);
-        }
+        projectDAO.save(project);
     }
 
     public void delete(DeleteProjectDTO deleteProjectDTO) {
@@ -66,6 +52,7 @@ public class ProjectService {
                 RepositoryDTO repositoryDTO = new RepositoryDTO();
                 repositoryDTO.setUrl(repository.getUrl());
                 repositoryDTO.setType(repository.getType());
+                repositoryDTO.setToken(repository.getToken());
                 projectDTO.getRepositoryDTOList().add(repositoryDTO);
             }
             projectDTOList.add(projectDTO);
@@ -80,6 +67,7 @@ public class ProjectService {
             Repository repository = new Repository();
             repository.setUrl(addSonarRepositoryDTO.getRepositoryURL());
             repository.setType("sonar");
+            repository.setToken(addSonarRepositoryDTO.getToken());
             project.getRepositorySet().add(repository);
             projectDAO.save(project);
             return true;
@@ -96,8 +84,11 @@ public class ProjectService {
             Repository repository = new Repository();
             repository.setUrl(url);
             repository.setType("github");
+            repository.setToken(addGithubRepositoryDTO.getToken());
             project.getRepositorySet().add(repository);
             String owner = url.split("/")[3];
+
+            githubApiService.setHeader(addGithubRepositoryDTO.getToken());
             JsonNode responseJson = githubApiService.getAvatarURL(owner);
             if(null != responseJson) {
                 String json = responseJson.textValue();

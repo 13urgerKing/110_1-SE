@@ -56,9 +56,10 @@ function DuplicationsPage(prop) {
     handleToggle()
     if(currentProject != undefined){
       let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
+      let sonarToken = repositoryDTO.token
       let sonarComponent = repositoryDTO.url.split("id=")[1] 
       setDuplicationUrl(`http://localhost:9000/component_measures?id=${sonarComponent}&metric=Duplications&view=list`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/duplication`,
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/duplication?token=${sonarToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setDuplicationList(response.data)
@@ -97,11 +98,12 @@ function DuplicationsPage(prop) {
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-      <h2><a href={duplicationUrl} target="blank">{dataForDuplicationChart.data.duplication[dataForDuplicationChart.data.duplication.length-1]}%</a></h2>
+      
       <div className={classes.root}>
         <div style={{width: "67%"}}>
           <div>
             <h1>Duplications</h1>
+            <h2><a href={duplicationUrl} target="blank">{dataForDuplicationChart.data.duplication[dataForDuplicationChart.data.duplication.length-1]}%</a></h2>
             <div>
               <DrawingBoard data={dataForDuplicationChart} maxBoardY={100} id="duplications-chart"/>
             </div>

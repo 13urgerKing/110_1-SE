@@ -37,10 +37,10 @@ export default function Login() {
 
   const login = () => {
     if(username === "" || password === "") {
-      alert("不準啦馬的>///<")
+      alert("帳號密碼不能為空")
     } else {
       let payload = {
-        username: username,
+        username : username,
         password : password
       }
       Axios.post(`http://localhost:9100/pvs-api/auth/login`, payload)
@@ -49,15 +49,15 @@ export default function Login() {
             goToSelect()
          })
          .catch((e) => {
-           alert(e.response.status)
+           alert(e.response.data)
            console.error(e)
-         }) 
+         })
     }
   }
 
   const register = () => {
     if(username === "" || password === "") {
-      alert("不準啦馬的>///<")
+      alert("帳號密碼不能為空")
     } else {
       let payload = {
         username: username,

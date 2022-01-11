@@ -27,7 +27,7 @@ public class GithubIssueLoaderThread extends Thread {
     public GithubIssueLoaderThread(List<GithubIssueDTO> githubIssueDTOList, String repoOwner, String repoName, int page) {
         String token = System.getenv("PVS_GITHUB_TOKEN");
         this.webClient = WebClient.builder().baseUrl("https://api.github.com/repos")
-                .defaultHeader("Authorization", "Bearer " + token)
+                .defaultHeader("Authorization", "Bearer ")
                 .build();
         this.githubIssueDTOList = githubIssueDTOList;
         this.repoOwner = repoOwner;

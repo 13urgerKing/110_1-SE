@@ -47,10 +47,12 @@ public class ProjectDAOIntegrationTest {
         repository01 = new Repository();
         repository01.setType("github");
         repository01.setUrl("facebook/react");
+        repository01.setToken("token01");
 
         repository02 = new Repository();
         repository02.setType("github");
         repository02.setUrl("angular/angular");
+        repository02.setToken("token02");
 
         projects = new HashSet<>();
         repositories = new HashSet<>();

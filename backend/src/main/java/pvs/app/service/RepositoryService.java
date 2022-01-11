@@ -12,19 +12,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 @SuppressWarnings("squid:S1192")
 public class RepositoryService {
-    private final WebClient webClient;
-
-    private final String token = System.getenv("PVS_GITHUB_TOKEN");
+    private WebClient webClient;
 
     static final Logger logger = LogManager.getLogger(RepositoryService.class.getName());
 
     public RepositoryService(WebClient.Builder webClientBuilder, @Value("${webClient.baseUrl.test}") String baseUrl) {
-        this.webClient = webClientBuilder.baseUrl(baseUrl)
-                .defaultHeader("Authorization", "Bearer " + token )
-                .build();
+        this.webClient = webClientBuilder.build();
     }
 
-    public boolean checkGithubURL(String url) {
+    public boolean checkGithubURL(String url, String token) {
         if(!url.contains("github.com")){
             return false;
         }
@@ -34,6 +30,7 @@ public class RepositoryService {
         this.webClient
                 .get()
                 .uri(targetURL)
+                .header("Authorization", "Bearer " + token)
                 .exchange()
                 .doOnSuccess(clientResponse -> 
                     result.set(clientResponse.statusCode().equals(HttpStatus.OK))

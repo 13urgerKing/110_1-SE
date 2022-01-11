@@ -22,16 +22,27 @@ public class GithubApiService {
 
     static final Logger logger = LogManager.getLogger(GithubApiService.class.getName());
 
-    private final WebClient webClient;
+    private WebClient defaultWebClient;
 
     private Map<String, Object> graphQlQuery;
+
+    private WebClient.Builder webClientBuilder;
+
+    private final String baseUrl;
 
     private final GithubCommitService githubCommitService;
 
     public GithubApiService(WebClient.Builder webClientBuilder, @Value("${webClient.baseUrl.github}") String baseUrl, GithubCommitService githubCommitService) {
-        String token = System.getenv("PVS_GITHUB_TOKEN");
         this.githubCommitService = githubCommitService;
-        this.webClient = webClientBuilder.baseUrl(baseUrl)
+        this.webClientBuilder = webClientBuilder;
+        this.baseUrl = baseUrl;
+        this.defaultWebClient = this.webClientBuilder.baseUrl(baseUrl)
+                .defaultHeader("Authorization", "Bearer ")
+                .build();
+    }
+
+    public void setHeader(String token) {
+        defaultWebClient = webClientBuilder.baseUrl(baseUrl)
                 .defaultHeader("Authorization", "Bearer " + token)
                 .build();
     }
@@ -93,7 +104,7 @@ public class GithubApiService {
     public boolean getCommitsFromGithub(String owner, String name, Date lastUpdate) throws InterruptedException, IOException {
         this.setGraphQlGetCommitsTotalCountAndCursorQuery(owner, name, lastUpdate);
 
-        String responseJson = Objects.requireNonNull(this.webClient.post()
+        String responseJson = Objects.requireNonNull(this.defaultWebClient.post()
                 .body(BodyInserters.fromObject(this.graphQlQuery))
                 .exchange()
                 .block())
@@ -119,7 +130,7 @@ public class GithubApiService {
                 for (int i = 1; i <= Math.ceil(totalCount/100); i++) {
                     GithubCommitLoaderThread githubCommitLoaderThread =
                             new GithubCommitLoaderThread(
-                                    this.webClient,
+                                    this.defaultWebClient,
                                     this.githubCommitService,
                                     owner,
                                     name,
@@ -142,7 +153,7 @@ public class GithubApiService {
         List<GithubIssueDTO> githubIssueDTOList = new ArrayList<>();
         this.setGraphQlGetIssuesTotalCountQuery(owner, name);
 
-        String responseJson = Objects.requireNonNull(this.webClient.post()
+        String responseJson = Objects.requireNonNull(this.defaultWebClient.post()
                 .body(BodyInserters.fromObject(this.graphQlQuery))
                 .exchange()
                 .block())
@@ -184,7 +195,7 @@ public class GithubApiService {
 
     public JsonNode getAvatarURL(String owner) throws IOException {
         this.setGraphQlGetAvatarQuery(owner);
-        String responseJson = Objects.requireNonNull(this.webClient.post()
+        String responseJson = Objects.requireNonNull(this.defaultWebClient.post()
                 .body(BodyInserters.fromObject(this.graphQlQuery))
                 .exchange()
                 .block())
