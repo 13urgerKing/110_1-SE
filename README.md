@@ -18,6 +18,6 @@
 ## 開啟步驟
 1. 在frontend目錄下執行npm run start
 2. 在backend目錄下執行mvn spring-boot:run
-3. 
+
 ## 執行測試 
  進入/backend 執行 mvn test
