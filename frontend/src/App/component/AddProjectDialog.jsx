@@ -18,6 +18,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
     const [githubRepositoryURL, setGithubRepositoryURL] = useState("")
     const [githubToken, setGithubToken] = useState("")
     const [sonarRepositoryURL, setSonarRepositoryURL] = useState("")
+    const [sonarToken, setSonarToken] = useState("")
     const [isGithubAvailable, setIsGithubAvailable] = useState(false)
     const [isSonarAvailable, setIsSonarAvailable] = useState(false)
     const jwtToken = localStorage.getItem("jwtToken")
@@ -30,7 +31,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
         if(githubRepositoryURL !== "" && githubToken !== "") {
           checker.push(checkGithubRepositoryURL());
         }
-        if(sonarRepositoryURL !== "") {
+        if(sonarRepositoryURL !== "" && sonarToken !== "") {
           checker.push(checkSonarRepositoryURL());
         }
 
@@ -41,7 +42,8 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
                 projectName : projectName,
                 githubRepositoryURL : githubRepositoryURL,
                 githubToken : githubToken,
-                sonarRepositoryURL : sonarRepositoryURL
+                sonarRepositoryURL : sonarRepositoryURL,
+                sonarToken : sonarToken
               }
               
               Axios.post("http://localhost:9100/pvs-api/project", payload,
@@ -76,7 +78,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
     }
 
     const checkSonarRepositoryURL = () => {
-      return Axios.get(`http://localhost:9100/pvs-api/repository/sonar/check?url=${sonarRepositoryURL}`,
+      return Axios.get(`http://localhost:9100/pvs-api/repository/sonar/check?url=${sonarRepositoryURL}&token=${sonarToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setIsSonarAvailable(true);
@@ -94,6 +96,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
       setGithubRepositoryURL("")
       setGithubToken("")
       setSonarRepositoryURL("")
+      setSonarToken("")
     }, [open])
     
     return (
@@ -161,6 +164,24 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
                 ),
               }}
             />
+
+            <TextField
+              margin="dense"
+              id="SonarToken"
+              label="Sonar Token"
+              type="text"
+              fullWidth
+              onChange = {(e) => {setSonarToken(e.target.value)}}
+              required
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SiSonarqube />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">
