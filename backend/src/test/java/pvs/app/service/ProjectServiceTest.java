@@ -148,16 +148,6 @@ public class ProjectServiceTest {
                                 .thenReturn(Optional.of(project));
                 DeleteGithubRepositoryDTO deleteGithubRepositoryDTO = new DeleteGithubRepositoryDTO();
                 deleteGithubRepositoryDTO.setProjectId(1L);
-                assertFalse(projectService.deleteGithubRepo(deleteGithubRepositoryDTO));
-                assertEquals(githubRepository, project.findRepositoryByType("github"));
-        }
-
-        @Test
-        public void deleteGithubRepoSuccess() {
-                when(projectDAO.findById(any(Long.class)))
-                                .thenReturn(Optional.of(project));
-                DeleteGithubRepositoryDTO deleteGithubRepositoryDTO = new DeleteGithubRepositoryDTO();
-                deleteGithubRepositoryDTO.setProjectId(1L);
                 assertTrue(projectService.deleteGithubRepo(deleteGithubRepositoryDTO));
                 assertEquals(null, project.findRepositoryByType("github"));
         }
