@@ -31,7 +31,8 @@ public class RepositoryServiceTest {
         mockWebServer.enqueue(new MockResponse()
                 .setResponseCode(200)
                 .setBody("{}")
-                .addHeader("Content-Type", "application/json"));
+                .addHeader("Content-Type", "application/json")
+        );
     }
 
     @Test

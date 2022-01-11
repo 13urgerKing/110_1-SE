@@ -28,8 +28,7 @@ public class GithubCommitLoaderThread extends Thread {
     private final String cursor;
     private final WebClient webClient;
 
-    public GithubCommitLoaderThread(WebClient webClient, GithubCommitService githubCommitService, String repoOwner,
-            String repoName, String cursor) {
+    public GithubCommitLoaderThread(WebClient webClient, GithubCommitService githubCommitService, String repoOwner, String repoName, String cursor) {
         this.githubCommitService = githubCommitService;
         this.repoOwner = repoOwner;
         this.repoName = repoName;
@@ -42,23 +41,23 @@ public class GithubCommitLoaderThread extends Thread {
         Map<String, Object> graphQlQuery = new HashMap<>();
         graphQlQuery.put("query", "{repository(owner: \"" + this.repoOwner + "\", name:\"" + this.repoName + "\") {" +
                 "defaultBranchRef {" +
-                "target {" +
-                "... on Commit {" +
-                "history (last:100, before: \"" + this.cursor + "\") {" +
-                "nodes {" +
-                "committedDate\n" +
-                "additions\n" +
-                "deletions\n" +
-                "changedFiles\n" +
-                "author {" +
-                "email\n" +
-                "name\n" +
-                "}" +
-                "}" +
-                "}" +
-                "}" +
-                "}" +
-                "}" +
+                    "target {" +
+                        "... on Commit {" +
+                            "history (last:100, before: \"" + this.cursor + "\") {" +
+                                "nodes {" +
+                                        "committedDate\n" +
+                                        "additions\n" +
+                                        "deletions\n" +
+                                        "changedFiles\n" +
+                                        "author {" +
+                                            "email\n" +
+                                            "name\n" +
+                                        "}" +
+                                    "}" +
+                                "}" +
+                            "}" +
+                        "}" +
+                    "}" +
                 "}}");
 
         String responseJson = Objects.requireNonNull(this.webClient.post()

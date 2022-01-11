@@ -53,8 +53,8 @@ public class GithubCommitDAOIntegrationTest {
 
     @Test
     public void whenFindFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc_thenReturnGithubCommit() {
-        GithubCommit foundEntity = githubCommitDAO.findFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc("angular",
-                "angular");
+        GithubCommit foundEntity =
+                githubCommitDAO.findFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc("angular", "angular");
 
         assertEquals(githubCommit02.getCommittedDate(), foundEntity.getCommittedDate());
     }

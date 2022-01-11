@@ -12,19 +12,22 @@ import java.util.Set;
 public class Member implements UserDetails {
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long memberId;
 
-    @Column(unique = true)
+    @Column(unique=true)
     @NotNull
     private String username;
 
     @NotNull
     private String password;
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinTable(name = "member_role", joinColumns = { @JoinColumn(name = "member_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "role_id") })
+    @ManyToMany(cascade = { CascadeType.ALL },fetch=FetchType.EAGER)
+    @JoinTable(
+            name = "member_role",
+            joinColumns = { @JoinColumn(name = "member_id") },
+            inverseJoinColumns = { @JoinColumn(name = "role_id") }
+    )
     private Set<Role> authorities;
 
     /**

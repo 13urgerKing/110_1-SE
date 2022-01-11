@@ -54,21 +54,21 @@ public class UserDetailServiceImplTest {
 
     @Test
     public void loadUserByUsername_found() {
-        // given
+        //given
         Mockito.when(mockMemberDAO.findByUsername("test")).thenReturn(member);
-        // when
+        //when
         UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername("test");
-        // then
+        //then
         Assert.assertEquals(member, userDetails);
     }
 
     @Test
     public void loadUserByUsername_notFound() {
-        // given
+        //given
         Mockito.when(mockMemberDAO.findByUsername("test")).thenThrow(new UsernameNotFoundException("not found"));
-        // when
+        //when
         UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername("notFound");
-        // then
+        //then
         Assert.assertNull(userDetails);
     }
 }

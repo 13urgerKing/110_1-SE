@@ -9,7 +9,7 @@ import java.util.Set;
 public class Project {
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long projectId;
 
     @NotNull
@@ -21,9 +21,12 @@ public class Project {
     @NotNull
     private String avatarURL = "https://avatars3.githubusercontent.com/u/17744001?u=038d9e068c4205d94c670d7d89fb921ec5b29782&v=4";
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinTable(name = "project_repository", joinColumns = { @JoinColumn(name = "project_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "repository_id") })
+    @ManyToMany(cascade = { CascadeType.ALL },fetch=FetchType.EAGER)
+    @JoinTable(
+            name = "project_repository",
+            joinColumns = { @JoinColumn(name = "project_id") },
+            inverseJoinColumns = { @JoinColumn(name = "repository_id") }
+    )
     private Set<Repository> repositorySet = new HashSet<>();
 
     public Long getProjectId() {
@@ -66,7 +69,7 @@ public class Project {
         this.repositorySet = repositorySet;
     }
 
-    public Repository findRepositoryByType(String type) {
+    public Repository findRepositoryByType(String type){
         for (Repository repository : repositorySet) {
             if (repository.getType().equals(type))
                 return repository;

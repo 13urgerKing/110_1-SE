@@ -57,11 +57,11 @@ public class AuthServiceTest {
 
     @Test
     public void login() {
-        // given
+        //given
         UserDetails userDetails = member;
         Mockito.when(userDetailsService.loadUserByUsername("test")).thenReturn(userDetails);
         Mockito.when(jwtTokenUtil.generateToken(userDetails)).thenReturn("this is jwtToken");
-        // when
+        //when
         try {
             String jwtTocken = authService.login("test", "test");
             Assert.assertEquals("this is jwtToken", jwtTocken);

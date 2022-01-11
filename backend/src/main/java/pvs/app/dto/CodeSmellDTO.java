@@ -10,4 +10,5 @@ import java.util.Date;
 public class CodeSmellDTO {
     Date date;
     Integer value;
+
 }

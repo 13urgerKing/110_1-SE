@@ -50,27 +50,27 @@ public class MemberServiceTest {
 
     @Test
     public void get() {
-        // context
+        //context
         when(mockMemberDAO.findById(1L))
                 .thenReturn(member01);
-        // when
+        //when
         MemberDTO memberDTO = memberService.get(1L);
 
-        // then
+        //then
         assertEquals(member01DTO.toString(), memberDTO.toString());
         verify(mockMemberDAO, times(1)).findById(1L);
     }
 
     @Test
     public void createUser() {
-        // context
+        //context
         when(mockRoleService.getByName("USER"))
                 .thenReturn(userRole);
         when(mockMemberDAO.save(any(Member.class))).thenReturn(member01);
 
-        // when
+        //when
         MemberDTO memberDTO = memberService.createUser(member01DTO);
-        // then
+        //then
         assertEquals(member01DTO.toString(), memberDTO.toString());
     }
 

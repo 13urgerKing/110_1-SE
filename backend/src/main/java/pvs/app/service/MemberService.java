@@ -39,7 +39,7 @@ public class MemberService {
             userRole = roleService.getByName("USER");
         }
 
-        if (userRole != null) {
+        if(userRole != null) {
             roleSet.add(userRole);
             member.setAuthorities(roleSet);
         }

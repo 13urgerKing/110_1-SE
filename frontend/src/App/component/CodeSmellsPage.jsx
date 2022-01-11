@@ -8,17 +8,17 @@ import DrawingBoard from './DrawingBoard'
 import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    '& > *': {
-      margin: theme.spacing(1),
+    root: {
+      display: 'flex',
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+      minWidth: '30px',
     },
-    minWidth: '30px',
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
+    },
 }))
 
 function CodeSmellsPage(prop) {
@@ -26,8 +26,8 @@ function CodeSmellsPage(prop) {
   const [codeSmellList, setCodeSmellList] = useState([])
   const [currentProject, setCurrentProject] = useState(undefined)
   const [codeSmellUrl, setCodeSmellUrl] = useState("")
-  const [dataForCodeSmellChart, setDataForCodeSmellChart] = useState({ labels: [], data: { codeSmell: [] } })
-
+  const [dataForCodeSmellChart, setDataForCodeSmellChart] = useState({ labels:[], data: { codeSmell: []} })
+ 
   const projectId = localStorage.getItem("projectId")
   const jwtToken = localStorage.getItem("jwtToken")
 
@@ -41,37 +41,37 @@ function CodeSmellsPage(prop) {
 
   useEffect(() => {
     Axios.get(`http://localhost:9100/pvs-api/project/1/${projectId}`,
-      { headers: { "Authorization": `${jwtToken}` } })
-      .then(response => {
-        setCurrentProject(response.data)
+    { headers: {"Authorization" : `${jwtToken}`} })
+    .then(response => {
+      setCurrentProject(response.data)
+    })
+    .catch(e => {
+      alert(e.response.status)
+      console.error(e)
+    })
+  }, [])
+  
+  useEffect(() => {
+    handleToggle()
+    if(currentProject != undefined) {
+      let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
+      let sonarToken = repositoryDTO.token
+      let sonarComponent = repositoryDTO.url.split("id=")[1] 
+      setCodeSmellUrl(`http://localhost:9000/project/issues?id=${sonarComponent}&resolved=false&types=CODE_SMELL`)
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/code_smell?token=${sonarToken}`,
+      { headers: {"Authorization" : `${jwtToken}`} })
+      .then((response) => {
+        setCodeSmellList(response.data)
       })
-      .catch(e => {
+      .catch((e) => {
         alert(e.response.status)
         console.error(e)
       })
-  }, [])
-
-  useEffect(() => {
-    handleToggle()
-    if (currentProject != undefined) {
-      let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
-      let sonarToken = repositoryDTO.token
-      let sonarComponent = repositoryDTO.url.split("id=")[1]
-      setCodeSmellUrl(`http://localhost:9000/project/issues?id=${sonarComponent}&resolved=false&types=CODE_SMELL`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/code_smell?token=${sonarToken}`,
-        { headers: { "Authorization": `${jwtToken}` } })
-        .then((response) => {
-          setCodeSmellList(response.data)
-        })
-        .catch((e) => {
-          alert(e.response.status)
-          console.error(e)
-        })
     }
   }, [currentProject])
 
   useEffect(() => {
-    let chartDataset = { labels: [], data: { codeSmell: [] } }
+    let chartDataset = { labels:[], data: { codeSmell: []} }
 
     codeSmellList.forEach(codeSmell => {
       chartDataset.labels.push(moment(codeSmell.date).format("YYYY-MM-DD HH:mm:ss"))
@@ -83,28 +83,28 @@ function CodeSmellsPage(prop) {
 
   }, [codeSmellList, prop.startMonth, prop.endMonth])
 
-  return (
-    <div style={{ marginLeft: "10px" }}>
+  return(
+    <div style={{marginLeft:"10px"}}>
       <Backdrop className={classes.backdrop} open={open}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <div className={classes.root}>
-        {currentProject && <ProjectAvatar
-          size="small"
+        {currentProject&&<ProjectAvatar 
+          size = "small" 
           project={currentProject}
         />}
         <p>
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-
+      
       <div className={classes.root}>
-        <div style={{ width: "67%" }}>
+        <div style={{width: "67%"}}>
           <div>
             <h1>Code Smells</h1>
-            <h2><a href={codeSmellUrl} target="blank">{dataForCodeSmellChart.data.codeSmell[dataForCodeSmellChart.data.codeSmell.length - 1]}</a></h2>
+            <h2><a href={codeSmellUrl} target="blank">{dataForCodeSmellChart.data.codeSmell[dataForCodeSmellChart.data.codeSmell.length-1]}</a></h2>
             <div>
-              <DrawingBoard data={dataForCodeSmellChart} maxBoardY={Math.max(...dataForCodeSmellChart.data.codeSmell) + 5} id="code-smells-chart" />
+              <DrawingBoard data={dataForCodeSmellChart} maxBoardY={Math.max(...dataForCodeSmellChart.data.codeSmell)+5} id="code-smells-chart"/>
             </div>
           </div>
         </div>

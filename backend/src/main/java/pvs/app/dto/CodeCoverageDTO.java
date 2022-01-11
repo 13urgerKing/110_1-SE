@@ -10,4 +10,5 @@ import java.util.Date;
 public class CodeCoverageDTO {
     Date date;
     Double value;
+
 }

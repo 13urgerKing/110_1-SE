@@ -21,18 +21,20 @@ public class RepositoryService {
     }
 
     public boolean checkGithubURL(String url, String token) {
-        if (!url.contains("github.com")) {
+        if(!url.contains("github.com")){
             return false;
         }
         String targetURL = url.replace("github.com", "api.github.com/repos");
         AtomicBoolean result = new AtomicBoolean(false);
-
+        
         this.webClient
                 .get()
                 .uri(targetURL)
                 .header("Authorization", "Bearer " + token)
                 .exchange()
-                .doOnSuccess(clientResponse -> result.set(clientResponse.statusCode().equals(HttpStatus.OK)))
+                .doOnSuccess(clientResponse -> 
+                    result.set(clientResponse.statusCode().equals(HttpStatus.OK))
+                )
                 .block();
         return result.get();
     }

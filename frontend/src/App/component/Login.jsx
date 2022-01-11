@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 
 export default function Login() {
-
+  
   const useStyles = makeStyles((theme) => ({
     root: {
       '& .MuiTextField-root': {
@@ -22,41 +22,41 @@ export default function Login() {
       color: '#fff',
     },
     button: {
-      '& > *': {
+      '& > *':{
         margin: theme.spacing(3),
       },
     },
   }));
 
 
-  const classes = useStyles()
+	const classes = useStyles()
   const history = useHistory()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
 
   const login = () => {
-    if (username === "" || password === "") {
+    if(username === "" || password === "") {
       alert("帳號密碼不能為空")
     } else {
       let payload = {
-        username: username,
-        password: password
+        username : username,
+        password : password
       }
       Axios.post(`http://localhost:9100/pvs-api/auth/login`, payload)
-        .then((response) => {
-          localStorage.setItem("jwtToken", response.data)
-          goToSelect()
-        })
-        .catch((e) => {
-          alert(e.response.data)
-          console.error(e)
-        })
+         .then((response) => {
+            localStorage.setItem("jwtToken", response.data)
+            goToSelect()
+         })
+         .catch((e) => {
+           alert(e.response.data)
+           console.error(e)
+         })
     }
   }
 
   const register = () => {
-    if (username === "" || password === "") {
+    if(username === "" || password === "") {
       alert("帳號密碼不能為空")
     } else {
       let payload = {
@@ -70,7 +70,7 @@ export default function Login() {
         .catch((e) => {
           alert(e.response.data)
           console.error(e)
-        })
+        }) 
     }
   }
 
@@ -79,7 +79,7 @@ export default function Login() {
   }
 
   return (
-    <div class={classes.root}>
+    <div class = {classes.root}>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <TextField
@@ -88,7 +88,7 @@ export default function Login() {
           type="text"
           variant="outlined"
           background
-          onChange={(e) => { setUsername(e.target.value) }}
+          onChange = {(e) => {setUsername(e.target.value)}}
         />
 
         <TextField
@@ -97,15 +97,15 @@ export default function Login() {
           type="password"
           variant="outlined"
           background
-          onChange={(e) => { setPassword(e.target.value) }}
+          onChange = {(e) => {setPassword(e.target.value)}}
         />
 
-        <div class={classes.button}>
-          <Button variant="contained" onClick={login} style={{ width: '90px' }} color="primary">
-            Login
+        <div class = {classes.button}>
+          <Button variant="contained" onClick={login} style={{width: '90px'}} color="primary">
+              Login
           </Button>
-          <Button variant="contained" onClick={register} style={{ width: '90px' }} color="primary">
-            Register
+          <Button variant="contained" onClick={register} style={{width: '90px'}} color="primary">
+              Register
           </Button>
         </div>
       </header>

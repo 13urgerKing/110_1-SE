@@ -5,26 +5,26 @@ import routes from './Routes'
 
 function ProtectedRoute({ component: Component, ...rest }) {
   const jwtToken = localStorage.getItem("jwtToken")
-  if (jwtToken === null) {
+  if(jwtToken === null) {
     return <Redirect to="/login" />
   }
-  return (
+  return(
     <Route {...rest} render={(routeProps) => (
       <Container>
-        <Component {...routeProps} />
+        <Component {...routeProps}/>
       </Container>
-    )} />
+    )}/>
   )
 }
 
 export default function AllRoutes() {
-  return (
-    <Switch>
-      {routes.map((prop) =>
+	return (
+		<Switch>
+			{routes.map((prop) => 
         prop.redirect ? <Redirect exact from={prop.path} to={prop.to} /> :
           prop.loginRequired ? <ProtectedRoute path={prop.path} component={prop.component} /> :
             <Route path={prop.path} component={prop.component} />
-      )}
-    </Switch>
-  )
+			)}
+		</Switch>
+	)
 }

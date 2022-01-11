@@ -9,25 +9,25 @@ import { connect } from 'react-redux';
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    '& > *': {
-      margin: theme.spacing(1),
+    root: {
+      display: 'flex',
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+      minWidth: '30px',
     },
-    minWidth: '30px',
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
+    backdrop: {
+      zIndex: theme.zIndex.drawer + 1,
+      color: '#fff',
+    },
 }))
 
 function IssuesPage(prop) {
-  const classes = useStyles()
+	const classes = useStyles()
   const [issueListData, setIssueListData] = useState([])
-  const [dataForIssueChart, setDataForIssueChart] = useState({ labels: [], data: { created: [], closed: [] } })
+  const [dataForIssueChart, setDataForIssueChart] = useState({ labels:[], data: { created: [], closed: []} })
 
-  const [currentProject, setCurrentProject] = useState({})
+  const [currentProject, setCurrentProject] = useState({ })
 
   const projectId = localStorage.getItem("projectId")
   const jwtToken = localStorage.getItem("jwtToken")
@@ -42,25 +42,25 @@ function IssuesPage(prop) {
 
   useEffect(() => {
     Axios.get(`http://localhost:9100/pvs-api/project/1/${projectId}`,
-      { headers: { "Authorization": `${jwtToken}` } })
-      .then((response) => {
-        setCurrentProject(response.data)
-      })
-      .catch((e) => {
-        alert(e.response.status)
-        console.error(e)
-      })
+    { headers: {"Authorization" : `${jwtToken}`} })
+    .then((response) => {
+      setCurrentProject(response.data)
+    })
+    .catch((e) => {
+      alert(e.response.status)
+      console.error(e)
+    })
   }, [])
 
   useEffect(() => {
-    if (Object.keys(currentProject).length != 0) {
+    if(Object.keys(currentProject).length != 0) {
       handleToggle()
       const githubRepo = currentProject.repositoryDTOList.find(repo => repo.type == 'github')
       const query = githubRepo.url.split("github.com/")[1]
-
-      // todo need reafctor with async
+  
+        // todo need reafctor with async
       Axios.get(`http://localhost:9100/pvs-api/github/issues/${query}`,
-        { headers: { "Authorization": `${jwtToken}` } })
+      { headers: {"Authorization" : `${jwtToken}`} })
         .then((response) => {
           console.log(response.data)
           setIssueListData(response.data)
@@ -75,7 +75,7 @@ function IssuesPage(prop) {
 
   useEffect(() => {
     const { endMonth } = prop
-    let chartDataset = { labels: [], data: { created: [], closed: [] } }
+    let chartDataset = { labels:[], data: { created: [], closed: []} }
     let issueListDataSortedByCreatedAt = issueListData
     let issueListDataSortedByClosedAt = issueListData
 
@@ -83,15 +83,15 @@ function IssuesPage(prop) {
     issueListDataSortedByClosedAt.sort((a, b) => a.closedAt - b.closedAt)
 
     if (issueListDataSortedByCreatedAt.length > 0) {
-      for (let month = moment(issueListDataSortedByCreatedAt[0].createdAt); month <= moment(endMonth).add(1, 'months'); month = month.add(1, 'months')) {
+      for (let month = moment(issueListDataSortedByCreatedAt[0].createdAt); month <= moment(endMonth).add(1, 'months'); month=month.add(1, 'months')) {
         let index
         chartDataset.labels.push(month.format("YYYY-MM"))
-
+        
         index = issueListDataSortedByCreatedAt.findIndex(issue => {
           return moment(issue.createdAt).year() > month.year() || moment(issue.createdAt).year() == month.year() && moment(issue.createdAt).month() > month.month()
         })
         chartDataset.data.created.push(index == -1 ? issueListData.length : index)
-
+        
         index = issueListDataSortedByClosedAt.findIndex(issue => {
           return moment(issue.closedAt).year() > month.year() || moment(issue.closedAt).year() == month.year() && moment(issue.closedAt).month() > month.month()
         })
@@ -102,23 +102,23 @@ function IssuesPage(prop) {
     setDataForIssueChart(chartDataset)
   }, [issueListData])
 
-  return (
-    <div style={{ marginLeft: "10px" }}>
-      <Backdrop className={classes.backdrop} open={open}>
+  return(
+    <div style={{marginLeft:"10px"}}>
+       <Backdrop className={classes.backdrop} open={open}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <div className={classes.root}>
-        <ProjectAvatar
-          size="small"
+        <ProjectAvatar 
+          size = "small" 
           project={currentProject}
         />
         <p>
           <h2>{currentProject.projectName}</h2>
-
+          
         </p>
       </div>
       <div className={classes.root}>
-        <div style={{ width: "67%" }}>
+        <div style={{width: "67%"}}>
           <div>
             <h1>Team</h1>
             <div>

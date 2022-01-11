@@ -33,8 +33,7 @@ public class RoleDAOIntegrationTest {
         userRole.setName("ROLE");
         roleDAO.save(userRole);
     }
-
-    @Test
+        @Test
     public void whenFindByName_thenReturnRole() {
         Role foundEntity = roleDAO.findByName("ROLE");
         assertEquals("ROLE", foundEntity.getName());

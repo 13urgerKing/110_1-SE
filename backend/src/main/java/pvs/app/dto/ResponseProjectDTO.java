@@ -15,10 +15,8 @@ public class ResponseProjectDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         ResponseProjectDTO that = (ResponseProjectDTO) o;
         return Objects.equals(projectId, that.projectId) &&
                 Objects.equals(projectName, that.projectName) &&

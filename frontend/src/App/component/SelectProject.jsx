@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Axios from 'axios';
-import {
-  Card,
-  CardActionArea,
+import { 
+  Card, 
+  CardActionArea, 
   IconButton
 } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
@@ -43,14 +43,14 @@ function SelectProject({ setCurrentProjectId }) {
 
   const loadProjects = () => {
     Axios.get("http://localhost:9100/pvs-api/project/1",
-      { headers: { "Authorization": `${jwtToken}` } })
-      .then((response) => {
-        setProjects(response.data)
-      })
-      .catch((e) => {
-        alert(e.response.status);
-        console.error(e)
-      })
+     { headers: {"Authorization" : `${jwtToken}`} })
+    .then((response) => {
+      setProjects(response.data)
+    })
+    .catch((e) => {
+      alert(e.response.status);
+      console.error(e)
+    }) 
   }
 
   useEffect(() => {
@@ -61,27 +61,27 @@ function SelectProject({ setCurrentProjectId }) {
   return (
     <div>
       <h1>Projects</h1>
-
+    
       <div className={classes.root}>
-        {projects.map(project =>
-          <ProjectAvatar size="large" project={project} reloadProjects={loadProjects} />
+        {projects.map( project =>
+          <ProjectAvatar size="large" project={project} reloadProjects={loadProjects}/>
         )}
         <Card id="create-project-card" className={classes.createProjectCard}>
           <CardActionArea onClick={() => setAddRepoDialogOpen(true)}>
-            <IconButton color="primary" className={classes.large} disabled>
-              <Add className={classes.small} />
+            <IconButton color="primary" className={classes.large}  disabled>
+              <Add className={classes.small}/>
             </IconButton>
           </CardActionArea>
 
         </Card>
         <AddProjectDialog
-          open={addRepoDialogOpen}
-          reloadProjects={loadProjects}
-          handleClose={() => setAddRepoDialogOpen(false)}
-        />
+            open={addRepoDialogOpen} 
+            reloadProjects={loadProjects}
+            handleClose={() => setAddRepoDialogOpen(false)}
+            />
       </div>
     </div>
   )
 }
 
-export default connect(null, { setCurrentProjectId })(SelectProject)
+export default connect(null, {setCurrentProjectId})(SelectProject)

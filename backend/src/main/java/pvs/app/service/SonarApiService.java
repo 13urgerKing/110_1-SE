@@ -37,7 +37,7 @@ public class SonarApiService {
     }
 
     public boolean checkSonarURL(String url, String token) {
-        if (!url.contains("localhost")) {
+        if(!url.contains("localhost")){
             return false;
         }
 
@@ -49,7 +49,9 @@ public class SonarApiService {
                 .uri(targetURL)
                 .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes()))
                 .exchange()
-                .doOnSuccess(clientResponse -> result.set(clientResponse.statusCode().equals(HttpStatus.OK)))
+                .doOnSuccess(clientResponse ->
+                        result.set(clientResponse.statusCode().equals(HttpStatus.OK))
+                )
                 .block();
         return result.get();
     }
@@ -68,16 +70,17 @@ public class SonarApiService {
         Optional<JsonNode> coverageJsonNodes = Optional.ofNullable(mapper.readTree(responseJson))
                 .map(resp -> resp.get("measures"));
 
-        if (coverageJsonNodes.isPresent()) {
+        if(coverageJsonNodes.isPresent()) {
             JsonNode coverageArrayNode = coverageJsonNodes.get().get(0).get("history");
 
-            if (coverageArrayNode.isArray()) {
-                for (final JsonNode jsonNode : coverageArrayNode) {
+            if(coverageArrayNode.isArray()) {
+                for(final JsonNode jsonNode : coverageArrayNode) {
 
-                    Date date = isoParser.parseDateTime(jsonNode.get("date").textValue().replace("\"", ""))
-                            .toDate();
+                    Date date =
+                            isoParser.parseDateTime(jsonNode.get("date").textValue().replace("\"", ""))
+                                    .toDate();
                     double coverageValue = 0;
-                    if (null != jsonNode.get("value")) {
+                    if(null != jsonNode.get("value")) {
                         coverageValue = jsonNode.get("value").asDouble();
                     }
                     coverages.add(new CodeCoverageDTO(date, coverageValue));
@@ -101,15 +104,16 @@ public class SonarApiService {
         Optional<JsonNode> bugJsonNodes = Optional.ofNullable(mapper.readTree(responseJson))
                 .map(resp -> resp.get("measures"));
 
-        if (bugJsonNodes.isPresent()) {
+        if(bugJsonNodes.isPresent()) {
             JsonNode bugArrayNode = bugJsonNodes.get().get(0).get("history");
 
-            if (bugArrayNode.isArray()) {
-                for (final JsonNode jsonNode : bugArrayNode) {
-                    Date date = isoParser.parseDateTime(jsonNode.get("date").textValue().replace("\"", ""))
-                            .toDate();
+            if(bugArrayNode.isArray()) {
+                for(final JsonNode jsonNode : bugArrayNode) {
+                    Date date =
+                            isoParser.parseDateTime(jsonNode.get("date").textValue().replace("\"", ""))
+                                    .toDate();
                     int bugValue = 0;
-                    if (null != jsonNode.get("value")) {
+                    if(null != jsonNode.get("value")) {
                         bugValue = jsonNode.get("value").asInt();
                     }
                     bugList.add(new BugDTO(date, bugValue));
@@ -133,14 +137,15 @@ public class SonarApiService {
         Optional<JsonNode> codeSmellJsonNodes = Optional.ofNullable(mapper.readTree(responseJson))
                 .map(resp -> resp.get("measures"));
 
-        if (codeSmellJsonNodes.isPresent()) {
+        if(codeSmellJsonNodes.isPresent()) {
             JsonNode codeSmellArrayNode = codeSmellJsonNodes.get().get(0).get("history");
-            if (codeSmellArrayNode.isArray()) {
-                for (final JsonNode jsonNode : codeSmellArrayNode) {
-                    Date date = isoParser.parseDateTime(jsonNode.get("date").textValue().replace("\"", ""))
-                            .toDate();
+            if(codeSmellArrayNode.isArray()) {
+                for(final JsonNode jsonNode : codeSmellArrayNode) {
+                    Date date =
+                            isoParser.parseDateTime(jsonNode.get("date").textValue().replace("\"", ""))
+                                    .toDate();
                     int codeSmellValue = 0;
-                    if (null != jsonNode.get("value")) {
+                    if(null != jsonNode.get("value")) {
                         codeSmellValue = jsonNode.get("value").asInt();
                     }
                     codeSmellList.add(new CodeSmellDTO(date, codeSmellValue));
@@ -164,14 +169,15 @@ public class SonarApiService {
         Optional<JsonNode> duplicationJsonNodes = Optional.ofNullable(mapper.readTree(responseJson))
                 .map(resp -> resp.get("measures"));
 
-        if (duplicationJsonNodes.isPresent()) {
+        if(duplicationJsonNodes.isPresent()) {
             JsonNode duplicationArrayNode = duplicationJsonNodes.get().get(0).get("history");
-            if (duplicationArrayNode.isArray()) {
-                for (final JsonNode jsonNode : duplicationArrayNode) {
-                    Date date = isoParser.parseDateTime(jsonNode.get("date").textValue().replace("\"", ""))
-                            .toDate();
+            if(duplicationArrayNode.isArray()) {
+                for(final JsonNode jsonNode : duplicationArrayNode) {
+                    Date date =
+                            isoParser.parseDateTime(jsonNode.get("date").textValue().replace("\"", ""))
+                                    .toDate();
                     double duplicationValue = 0;
-                    if (null != jsonNode.get("value")) {
+                    if(null != jsonNode.get("value")) {
                         duplicationValue = jsonNode.get("value").asDouble();
                     }
                     duplicationList.add(new DuplicationDTO(date, duplicationValue));

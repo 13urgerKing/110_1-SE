@@ -11,7 +11,7 @@ import java.util.Set;
 public class Repository {
     @Id
     @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long repositoryId;
 
     @NotNull

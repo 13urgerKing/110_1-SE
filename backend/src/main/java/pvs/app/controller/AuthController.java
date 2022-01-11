@@ -13,11 +13,11 @@ import pvs.app.service.AuthService;
 
 @RestController
 public class AuthController {
+
     static final Logger logger = LogManager.getLogger(AuthController.class.getName());
 
     @Autowired
     private AuthService authService;
-
     /**
      * 登录
      */

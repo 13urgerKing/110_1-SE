@@ -10,4 +10,5 @@ import java.util.Date;
 public class BugDTO {
     Date date;
     Integer value;
+
 }

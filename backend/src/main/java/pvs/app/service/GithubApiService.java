@@ -32,8 +32,7 @@ public class GithubApiService {
 
     private final GithubCommitService githubCommitService;
 
-    public GithubApiService(WebClient.Builder webClientBuilder, @Value("${webClient.baseUrl.github}") String baseUrl,
-            GithubCommitService githubCommitService) {
+    public GithubApiService(WebClient.Builder webClientBuilder, @Value("${webClient.baseUrl.github}") String baseUrl, GithubCommitService githubCommitService) {
         this.githubCommitService = githubCommitService;
         this.webClientBuilder = webClientBuilder;
         this.baseUrl = baseUrl;
@@ -59,51 +58,50 @@ public class GithubApiService {
         String since = dateToISO8601(lastUpdate);
         Map<String, Object> graphQl = new HashMap<>();
         graphQl.put("query", "{repository(owner: \"" + owner + "\", name:\"" + name + "\") {" +
-                "defaultBranchRef {" +
-                "target {" +
-                "... on Commit {" +
-                "history (since: \"" + since + "\") {" +
-                "totalCount\n" +
-                "pageInfo {" +
-                "startCursor" +
-                "}" +
-                "}" +
-                "}" +
-                "}" +
-                "}" +
-                "}}");
+                            "defaultBranchRef {" +
+                                "target {" +
+                                    "... on Commit {" +
+                                        "history (since: \"" + since + "\") {" +
+                                            "totalCount\n" +
+                                            "pageInfo {" +
+                                                "startCursor" +
+                                            "}" +
+                                        "}" +
+                                    "}" +
+                                "}" +
+                            "}" +
+                        "}}");
         this.graphQlQuery = graphQl;
     }
 
     private void setGraphQlGetIssuesTotalCountQuery(String owner, String name) {
         Map<String, Object> graphQl = new HashMap<>();
         graphQl.put("query", "{repository(owner: \"" + owner + "\", name:\"" + name + "\") {" +
-                "issues (first: 100) {" +
-                "totalCount" +
-                "}" +
-                "}}");
+                                "issues (first: 100) {" +
+                                    "totalCount" +
+                                "}" +
+                            "}}");
         this.graphQlQuery = graphQl;
     }
 
     private void setGraphQlGetAvatarQuery(String owner) {
         Map<String, Object> graphQl = new HashMap<>();
         graphQl.put("query", "{search(type: USER, query: \"in:username " + owner + "\", first: 1) {" +
-                "edges {" +
-                "node {" +
-                "... on User {" +
-                "avatarUrl" +
-                "}" +
-                "... on Organization {" +
-                "avatarUrl" +
-                "}" +
-                "}" +
-                "}}}");
+                    "edges {" +
+                        "node {" +
+                            "... on User {" +
+                                "avatarUrl" +
+                            "}" +
+                            "... on Organization {" +
+                                "avatarUrl" +
+                            "}" +
+                        "}" +
+                    "}}}");
 
         this.graphQlQuery = graphQl;
     }
 
-    public boolean getCommitsFromGithub(String owner, String name, Date lastUpdate)
-            throws InterruptedException, IOException {
+    public boolean getCommitsFromGithub(String owner, String name, Date lastUpdate) throws InterruptedException, IOException {
         this.setGraphQlGetCommitsTotalCountAndCursorQuery(owner, name, lastUpdate);
 
         String responseJson = Objects.requireNonNull(this.defaultWebClient.post()
@@ -122,25 +120,26 @@ public class GithubApiService {
                 .map(branch -> branch.get("target"))
                 .map(tag -> tag.get("history"));
 
-        if (paginationInfo.isPresent()) {
+        if(paginationInfo.isPresent()) {
             double totalCount = paginationInfo.get().get("totalCount").asInt();
             List<GithubCommitLoaderThread> githubCommitLoaderThreadList = new ArrayList<>();
 
             if (totalCount != 0) {
                 String cursor = paginationInfo.get().get("pageInfo").get("startCursor").textValue()
                         .split(" ")[0];
-                for (int i = 1; i <= Math.ceil(totalCount / 100); i++) {
-                    GithubCommitLoaderThread githubCommitLoaderThread = new GithubCommitLoaderThread(
-                            this.defaultWebClient,
-                            this.githubCommitService,
-                            owner,
-                            name,
-                            cursor + " " + (i * 100));
+                for (int i = 1; i <= Math.ceil(totalCount/100); i++) {
+                    GithubCommitLoaderThread githubCommitLoaderThread =
+                            new GithubCommitLoaderThread(
+                                    this.defaultWebClient,
+                                    this.githubCommitService,
+                                    owner,
+                                    name,
+                                    cursor + " " + (i*100));
                     githubCommitLoaderThreadList.add(githubCommitLoaderThread);
                     githubCommitLoaderThread.start();
                 }
 
-                for (GithubCommitLoaderThread thread : githubCommitLoaderThreadList) {
+                for (GithubCommitLoaderThread thread: githubCommitLoaderThreadList) {
                     thread.join();
                 }
             }
@@ -150,8 +149,7 @@ public class GithubApiService {
         }
     }
 
-    public List<GithubIssueDTO> getIssuesFromGithub(String owner, String name)
-            throws IOException, InterruptedException {
+    public List<GithubIssueDTO> getIssuesFromGithub(String owner, String name) throws IOException, InterruptedException  {
         List<GithubIssueDTO> githubIssueDTOList = new ArrayList<>();
         this.setGraphQlGetIssuesTotalCountQuery(owner, name);
 
@@ -169,22 +167,23 @@ public class GithubApiService {
                 .map(data -> data.get("repository"))
                 .map(repo -> repo.get("issues"));
 
-        if (paginationInfo.isPresent()) {
+        if(paginationInfo.isPresent()) {
             double totalCount = paginationInfo.get().get("totalCount").asInt();
             List<GithubIssueLoaderThread> githubIssueLoaderThreadList = new ArrayList<>();
 
             if (0 != totalCount) {
-                for (int i = 1; i <= Math.ceil(totalCount / 100); i++) {
-                    GithubIssueLoaderThread githubIssueLoaderThread = new GithubIssueLoaderThread(
-                            githubIssueDTOList,
-                            owner,
-                            name,
-                            i);
+                for (int i = 1; i <= Math.ceil(totalCount/100); i++) {
+                    GithubIssueLoaderThread githubIssueLoaderThread =
+                            new GithubIssueLoaderThread(
+                                    githubIssueDTOList,
+                                    owner,
+                                    name,
+                                    i);
                     githubIssueLoaderThreadList.add(githubIssueLoaderThread);
                     githubIssueLoaderThread.start();
                 }
 
-                for (GithubIssueLoaderThread thread : githubIssueLoaderThreadList) {
+                for (GithubIssueLoaderThread thread: githubIssueLoaderThreadList) {
                     thread.join();
                 }
             }
@@ -211,6 +210,7 @@ public class GithubApiService {
                 .map(edges -> edges.get("node"))
                 .map(node -> node.get("avatarUrl"));
 
-        return avatar.orElse(null);
+        return avatar.orElse( null);
     }
 }
+

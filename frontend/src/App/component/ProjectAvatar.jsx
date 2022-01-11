@@ -12,28 +12,28 @@ import { connect } from 'react-redux'
 import { setCurrentProjectId } from '../../redux/action'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    '& > *': {
-      margin: theme.spacing(1),
+    root: {
+      display: 'flex',
+      '& > *': {
+        margin: theme.spacing(1),
+      },
     },
-  },
-  small: {
-    width: theme.spacing(10),
-    height: theme.spacing(10),
-  },
-  large: {
-    width: theme.spacing(25),
-  },
-  icon: {},
-  avatar: {
-    width: "100%",
-    height: "100%"
-  }
-}))
+    small: {
+        width: theme.spacing(10),
+        height: theme.spacing(10),
+      },
+    large: {
+      width: theme.spacing(25),
+    },
+    icon: {},
+    avatar: {
+      width: "100%",
+      height: "100%"
+    }
+  }))
 
 function ProjectAvatar(props) {
-  const classes = useStyles()
+	const classes = useStyles()
   const history = useHistory()
 
 
@@ -44,14 +44,14 @@ function ProjectAvatar(props) {
   const [hasSonarRepo, setHasSonarRepo] = useState(false)
 
   useEffect(() => {
-    if (props.size === 'large') {
-      const githubRepo = props.project.repositoryDTOList.find(x => x.type == "github")
-      const sonarRepo = props.project.repositoryDTOList.find(x => x.type == "sonar")
+    if(props.size === 'large') {
+      const githubRepo = props.project.repositoryDTOList.find(x=> x.type == "github")
+      const sonarRepo = props.project.repositoryDTOList.find(x=> x.type == "sonar")
 
       setHasGithubRepo(githubRepo != undefined)
       setHasSonarRepo(sonarRepo != undefined)
-
-      if (githubRepo != undefined) {
+  
+      if(githubRepo != undefined) {
         setWantedRepoType("sonar")
       } else if (sonarRepo != undefined) {
         setWantedRepoType("github")
@@ -91,14 +91,14 @@ function ProjectAvatar(props) {
 
   return (
     <div>
-      <Box className={props.size === 'large' ? classes.large : classes.small}>
-        <CardActionArea onClick={goToDashboard}>
-          <Avatar alt="first repository" src={props.project.avatarURL} className={classes.avatar} />
-          {props.size === 'large' &&
-            <p style={{ "textAlign": "center" }}>{props.project.projectName}</p>
-          }
-        </CardActionArea>
+    <Box className={props.size==='large' ? classes.large : classes.small}>
+      <CardActionArea onClick={goToDashboard}>
+        <Avatar alt="first repository" src={props.project.avatarURL} className={classes.avatar}/>
         {props.size === 'large' &&
+          <p style={{"textAlign":"center"}}>{props.project.projectName}</p>
+        }
+      </CardActionArea>
+      {props.size === 'large' && 
           <CardActions disableSpacing>
             {hasGithubRepo &&
               <IconButton aria-label="GitHub" onClick={goToCommit}>
@@ -112,34 +112,34 @@ function ProjectAvatar(props) {
             }
             {(!hasGithubRepo || !hasSonarRepo) &&
               <IconButton aria-label="Add Repository" onClick={showAddRepoDialog}>
-                <AddIcon />
+                <AddIcon/>
               </IconButton>
             }
             {(hasGithubRepo || hasSonarRepo) &&
               <IconButton aria-label="Delete Repository" onClick={showDeleteRepoDialog}>
-                <DeleteIcon />
+                <DeleteIcon/>
               </IconButton>
             }
           </CardActions>
         }
-      </Box>
-      <AddRepositoryDialog
-        open={addRepoDialogOpen}
-        reloadProjects={props.reloadProjects}
-        handleClose={() => setAddRepoDialogOpen(false)}
-        projectId={props.project.projectId}
-        wantedRepoType={wantedRepoType}
-      />
-      <DeleteRepositoryDialog
-        open={deleteRepoDialogOpen}
-        reloadProjects={props.reloadProjects}
-        handleClose={() => setDeleteRepoDialogOpen(false)}
-        projectId={props.project.projectId}
-        hasGithubRepo={hasGithubRepo}
-        hasSonarRepo={hasSonarRepo}
-      />
-    </div>//:()
+    </Box>
+    <AddRepositoryDialog
+      open={addRepoDialogOpen} 
+      reloadProjects={props.reloadProjects}
+      handleClose={() => setAddRepoDialogOpen(false)}
+      projectId={props.project.projectId}
+      wantedRepoType={wantedRepoType}
+    />
+    <DeleteRepositoryDialog
+      open={deleteRepoDialogOpen} 
+      reloadProjects={props.reloadProjects}
+      handleClose={() => setDeleteRepoDialogOpen(false)}
+      projectId={props.project.projectId}
+      hasGithubRepo={hasGithubRepo}
+      hasSonarRepo={hasSonarRepo}
+    />
+  </div>//:()
   )
 }
 
-export default connect(null, { setCurrentProjectId })(ProjectAvatar);
+export default connect(null, {setCurrentProjectId})(ProjectAvatar);

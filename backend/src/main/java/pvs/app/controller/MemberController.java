@@ -22,14 +22,16 @@ public class MemberController {
 
     @PostMapping("/member")
     public ResponseEntity<String> createMember(@RequestBody MemberDTO memberDTO) {
-        try {
-            if (null != memberService.createUser(memberDTO)) {
+        try{
+            if(null != memberService.createUser(memberDTO)) {
                 return ResponseEntity.status(HttpStatus.OK).body("新建使用者成功");
-            } else {
+            }
+            else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("新建使用者失敗");
             }
-        } catch (Exception e) {
+        }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("使用者已存在");
         }
     }
+
 }

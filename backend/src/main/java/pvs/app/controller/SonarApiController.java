@@ -21,6 +21,7 @@ import pvs.app.service.SonarApiService;
 import java.io.IOException;
 import java.util.List;
 
+
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class SonarApiController {
@@ -39,12 +40,11 @@ public class SonarApiController {
     }
 
     @GetMapping("/sonar/{component}/coverage")
-    public ResponseEntity<String> getCoverage(@PathVariable("component") String component,
-            @RequestParam("token") String token) {
+    public ResponseEntity<String> getCoverage(@PathVariable("component") String component, @RequestParam("token") String token) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             List<CodeCoverageDTO> coverages = sonarApiService.getSonarCodeCoverage(component, token);
-            if (!coverages.isEmpty()) {
+            if(!coverages.isEmpty()) {
                 String coverageString = objectMapper.writeValueAsString(coverages);
 
                 return ResponseEntity.status(HttpStatus.OK)
@@ -62,12 +62,11 @@ public class SonarApiController {
     }
 
     @GetMapping("/sonar/{component}/bug")
-    public ResponseEntity<String> getBug(@PathVariable("component") String component,
-            @RequestParam("token") String token) throws IOException {
+    public ResponseEntity<String> getBug(@PathVariable("component") String component, @RequestParam("token") String token) throws IOException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             List<BugDTO> bugList = sonarApiService.getSonarBug(component, token);
-            if (!bugList.isEmpty()) {
+            if(!bugList.isEmpty()) {
                 String bugListString = objectMapper.writeValueAsString(bugList);
 
                 return ResponseEntity.status(HttpStatus.OK)
@@ -85,12 +84,11 @@ public class SonarApiController {
     }
 
     @GetMapping("/sonar/{component}/code_smell")
-    public ResponseEntity<String> getCodeSmell(@PathVariable("component") String component,
-            @RequestParam("token") String token) throws IOException {
+    public ResponseEntity<String> getCodeSmell(@PathVariable("component") String component, @RequestParam("token") String token) throws IOException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             List<CodeSmellDTO> codeSmellList = sonarApiService.getSonarCodeSmell(component, token);
-            if (!codeSmellList.isEmpty()) {
+            if(!codeSmellList.isEmpty()) {
                 String codeSmellListString = objectMapper.writeValueAsString(codeSmellList);
 
                 return ResponseEntity.status(HttpStatus.OK)
@@ -108,12 +106,11 @@ public class SonarApiController {
     }
 
     @GetMapping("/sonar/{component}/duplication")
-    public ResponseEntity<String> getDuplication(@PathVariable("component") String component,
-            @RequestParam("token") String token) throws IOException {
+    public ResponseEntity<String> getDuplication(@PathVariable("component") String component, @RequestParam("token") String token) throws IOException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             List<DuplicationDTO> duplicationList = sonarApiService.getDuplication(component, token);
-            if (!duplicationList.isEmpty()) {
+            if(!duplicationList.isEmpty()) {
                 String duplicationListString = objectMapper.writeValueAsString(duplicationList);
 
                 return ResponseEntity.status(HttpStatus.OK)
