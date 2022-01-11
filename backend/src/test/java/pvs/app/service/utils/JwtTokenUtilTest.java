@@ -52,29 +52,27 @@ public class JwtTokenUtilTest {
 
     @Test
     public void validToken() {
-        //given
+        // given
         UserDetails userDetails = memberUser;
-        //when
+        // when
         String token = jwtTokenUtil.generateToken(userDetails);
         boolean tokenValidated = jwtTokenUtil.validateToken(token, userDetails);
-        //then
+        // then
         Assert.assertTrue(tokenValidated);
     }
 
     @Test
-    public void invalidToken(){
-        //given
+    public void invalidToken() {
+        // given
         UserDetails authenticatedUser = memberUser;
         UserDetails authenticatedAdmin = memberAdmin;
 
-        //when
+        // when
         String token = jwtTokenUtil.generateToken(authenticatedUser);
         boolean tokenValidated = jwtTokenUtil.validateToken(token, authenticatedAdmin);
 
-        //then
+        // then
         Assert.assertFalse(tokenValidated);
     }
-
-
 
 }

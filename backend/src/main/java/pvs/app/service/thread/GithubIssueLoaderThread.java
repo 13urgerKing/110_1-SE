@@ -23,8 +23,8 @@ public class GithubIssueLoaderThread extends Thread {
     private final WebClient webClient;
     private final int page;
 
-
-    public GithubIssueLoaderThread(List<GithubIssueDTO> githubIssueDTOList, String repoOwner, String repoName, int page) {
+    public GithubIssueLoaderThread(List<GithubIssueDTO> githubIssueDTOList, String repoOwner, String repoName,
+            int page) {
         String token = System.getenv("PVS_GITHUB_TOKEN");
         this.webClient = WebClient.builder().baseUrl("https://api.github.com/repos")
                 .defaultHeader("Authorization", "Bearer ")
@@ -38,7 +38,8 @@ public class GithubIssueLoaderThread extends Thread {
     @Override
     public void run() {
         String responseJson = Objects.requireNonNull(this.webClient.get()
-                .uri("/" + this.repoOwner + "/" + this.repoName + "/issues?page=" + this.page + "&per_page=100&state=all")
+                .uri("/" + this.repoOwner + "/" + this.repoName + "/issues?page=" + this.page
+                        + "&per_page=100&state=all")
                 .exchange()
                 .block())
                 .bodyToMono(String.class)

@@ -63,65 +63,66 @@ public class GithubCommitServiceTest {
 
     @Test
     public void getAllCommits() {
-        //context
+        // context
         when(mockGithubCommitDAO.findByRepoOwnerAndRepoName("facebook", "react"))
                 .thenReturn(githubCommits);
 
-        //when
+        // when
         List<GithubCommitDTO> githubCommits = githubCommitService.getAllCommits("facebook", "react");
 
-        //then
+        // then
         assertEquals(2, githubCommits.size());
         verify(mockGithubCommitDAO, times(1)).findByRepoOwnerAndRepoName("facebook", "react");
     }
 
     @Test
     public void getLastCommit_isExist() throws ParseException {
-        //context
+        // context
         when(mockGithubCommitDAO.findFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc("facebook", "react"))
                 .thenReturn(githubCommits.get(1));
 
-        //given
+        // given
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 日期格式
 
-        //when
+        // when
         GithubCommitDTO githubCommit = githubCommitService.getLastCommit("facebook", "react");
 
-        //then
+        // then
         assertEquals(dateFormat.parse("2020-12-21 22:22:22"), githubCommit.getCommittedDate());
-        verify(mockGithubCommitDAO, times(1)).findFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc("facebook", "react");
+        verify(mockGithubCommitDAO, times(1)).findFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc("facebook",
+                "react");
     }
 
     @Test
     public void getLastCommit_isNotExist() throws ParseException {
-        //context
+        // context
         when(mockGithubCommitDAO.findFirstByRepoOwnerAndRepoNameOrderByCommittedDateDesc("facebook", "react"))
                 .thenReturn(null);
 
-        //when
+        // when
         GithubCommitDTO githubCommit = githubCommitService.getLastCommit("facebook", "react");
 
-        //then
+        // then
         assertNull(githubCommit);
     }
 
     @Test
     public void save() {
-        List<GithubCommit> fakeGithubCommits= new ArrayList<>();
+        List<GithubCommit> fakeGithubCommits = new ArrayList<>();
         fakeGithubCommits.add(githubCommit01);
 
-        //context
+        // context
         when(mockGithubCommitDAO.save(githubCommit01))
                 .thenReturn(githubCommit01);
         when(mockGithubCommitDAO.findByRepoOwnerAndRepoName("facebook", "react"))
                 .thenReturn(fakeGithubCommits);
 
-        //when
+        // when
         githubCommitService.save(githubCommitDTO01);
 
-        //then
+        // then
         List<GithubCommitDTO> githubCommitDTOList = githubCommitService.getAllCommits("facebook", "react");
         assertEquals(1, githubCommitDTOList.size());
-//        verify(mockGithubCommitDAO, times(1)).save(githubCommit01);
+        // verify(mockGithubCommitDAO, times(1)).save(githubCommit01);
     }
 }

@@ -6,7 +6,7 @@ export default function App() {
   return (
     <div>
       <BrowserRouter>
-        <AllRoutes/>
+        <AllRoutes />
       </BrowserRouter>
     </div>
   )

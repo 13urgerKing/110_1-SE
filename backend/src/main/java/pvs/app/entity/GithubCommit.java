@@ -13,7 +13,7 @@ public class GithubCommit {
 
     @Id
     @NotNull
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotNull
@@ -41,13 +41,15 @@ public class GithubCommit {
     private String authorEmail;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="repository_id")
+    @JoinColumn(name = "repository_id")
     private Repository repository;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         GithubCommit that = (GithubCommit) o;
         return additions == that.additions &&
                 deletions == that.deletions &&
@@ -63,6 +65,7 @@ public class GithubCommit {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, repoOwner, repoName, committedDate, additions, deletions, changeFiles, authorName, authorEmail, repository);
+        return Objects.hash(id, repoOwner, repoName, committedDate, additions, deletions, changeFiles, authorName,
+                authorEmail, repository);
     }
 }

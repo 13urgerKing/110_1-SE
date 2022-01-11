@@ -28,11 +28,9 @@ public class GithubCommitDTO {
     private String authorName;
     private String authorEmail;
 
-
     public void setCommittedDate(Date committedDate) {
         this.committedDate = committedDate;
     }
-
 
     public void setAuthor(Optional<JsonNode> authorJson) {
         authorJson.map(s -> s.get("name")).ifPresent(s -> this.authorName = s.toString());
@@ -42,8 +40,7 @@ public class GithubCommitDTO {
     public void setCommittedDate(JsonNode committedDate) {
 
         DateTimeFormatter isoParser = ISODateTimeFormat.dateTimeNoMillis();
-        this.committedDate =
-                isoParser.parseDateTime(committedDate.toString().replace("\"", "")).toDate();
+        this.committedDate = isoParser.parseDateTime(committedDate.toString().replace("\"", "")).toDate();
     }
 
     public String getAddSecondsToCommittedDateISOString(int seconds) {
