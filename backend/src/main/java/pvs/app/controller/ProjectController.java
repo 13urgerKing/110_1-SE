@@ -51,7 +51,7 @@ public class ProjectController {
     }
 
     @GetMapping("/repository/github/check")
-    public ResponseEntity<String> checkGithubURL(@RequestParam("url") String url, @RequestParam("token") String token ) {
+    public ResponseEntity<String> checkGithubURL(@RequestParam("url") String url, @RequestParam("token") String token) {
         if(repositoryService.checkGithubURL(url, token)) {
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
         }
@@ -61,8 +61,8 @@ public class ProjectController {
     }
 
     @GetMapping("/repository/sonar/check")
-    public ResponseEntity<String> checkSonarURL(@RequestParam("url") String url) {
-        if(sonarApiService.checkSonarURL(url)) {
+    public ResponseEntity<String> checkSonarURL(@RequestParam("url") String url, @RequestParam("token") String token) {
+        if(sonarApiService.checkSonarURL(url, token)) {
             return ResponseEntity.status(HttpStatus.OK).body(successMessage);
         }
         else {
@@ -95,7 +95,7 @@ public class ProjectController {
     @PostMapping("/project/{projectId}/repository/sonar")
     public ResponseEntity<String> addSonarRepository(@RequestBody AddSonarRepositoryDTO addSonarRepositoryDTO) {
         try{
-            if(sonarApiService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL())) {
+            if(sonarApiService.checkSonarURL(addSonarRepositoryDTO.getRepositoryURL(), addSonarRepositoryDTO.getToken())) {
                 if(projectService.addSonarRepo(addSonarRepositoryDTO)) {
                     return ResponseEntity.status(HttpStatus.OK).body(successMessage);
                 } else {
@@ -115,7 +115,7 @@ public class ProjectController {
     @PostMapping("/project/{projectId}/repository/github")
     public ResponseEntity<String> addGithubRepository(@RequestBody AddGithubRepositoryDTO addGithubRepositoryDTO) {
         try{
-            if(repositoryService.checkGithubURL(addGithubRepositoryDTO.getRepositoryURL(), addGithubRepositoryDTO.getGithubToken())) {
+            if(repositoryService.checkGithubURL(addGithubRepositoryDTO.getRepositoryURL(), addGithubRepositoryDTO.getToken())) {
                 if(projectService.addGithubRepo(addGithubRepositoryDTO)) {
                     return ResponseEntity.status(HttpStatus.OK).body(successMessage);
                 } else {

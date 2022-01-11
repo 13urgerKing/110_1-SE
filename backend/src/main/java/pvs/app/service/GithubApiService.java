@@ -28,8 +28,6 @@ public class GithubApiService {
 
     private WebClient.Builder webClientBuilder;
 
-    private String token;
-
     private final String baseUrl;
 
     private final GithubCommitService githubCommitService;
@@ -45,7 +43,6 @@ public class GithubApiService {
     }
 
     public void setHeader(String token) {
-        this.token = token;
         defaultWebClient = webClientBuilder.baseUrl(baseUrl)
                 .defaultHeader("Authorization", "Bearer " + token)
                 .build();

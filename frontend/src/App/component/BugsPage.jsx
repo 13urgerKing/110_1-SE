@@ -57,9 +57,10 @@ function BugsPage(prop) {
     handleToggle()
     if(currentProject != undefined){
       let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
+      let sonarToken = repositoryDTO.token
       let sonarComponent = repositoryDTO.url.split("id=")[1]
       setBugUrl(`http://localhost:9000/project/issues?id=${sonarComponent}&resolved=false&types=BUG`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/bug`,
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/bug?token=${sonarToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setBugList(response.data)

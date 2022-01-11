@@ -15,7 +15,7 @@ import {
 export default function AddRepositoryDialog({ open, reloadProjects, handleClose, projectId}) {
   const [type, setType] = useState(false)
   const [repositoryURL, setRepositoryURL] = useState("")
-  const [githubToken, setGithubToken] = useState(false)
+  const [token, setToken] = useState(false)
   const jwtToken = localStorage.getItem("jwtToken")
 
   const addRepository = () => {
@@ -25,7 +25,7 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
       let payload = {
         projectId: projectId,
         repositoryURL : repositoryURL,
-        githubToken: githubToken
+        token: token,
       }
       Axios.post(`http://localhost:9100/pvs-api/project/${projectId}/repository/${type}`, payload,
       { headers: {"Authorization" : `${jwtToken}`} })
@@ -42,7 +42,7 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
 
   useEffect(() => {
     setRepositoryURL("")
-    setGithubToken("")
+    setToken("")
   }, [open])
   
   return (
@@ -72,8 +72,15 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
             label="Github Token"
             type="text"
             fullWidth
-            onChange = {(e) => {setGithubToken(e.target.value)}}
-          /> : <></>}
+            onChange = {(e) => {setToken(e.target.value)}}
+          /> : <TextField
+          margin="dense"
+          id="SonarToken"
+          label="Sonar Token"
+          type="text"
+          fullWidth
+          onChange = {(e) => {setToken(e.target.value)}}
+          />}
           
         </DialogContent>
         <DialogActions>

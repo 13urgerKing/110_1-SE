@@ -6,5 +6,5 @@ import lombok.Data;
 public class AddGithubRepositoryDTO {
     private Long projectId;
     private String repositoryURL;
-    private String githubToken;
+    private String token;
 }

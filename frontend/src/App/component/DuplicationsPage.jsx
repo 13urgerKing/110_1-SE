@@ -56,9 +56,10 @@ function DuplicationsPage(prop) {
     handleToggle()
     if(currentProject != undefined){
       let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
+      let sonarToken = repositoryDTO.token
       let sonarComponent = repositoryDTO.url.split("id=")[1] 
       setDuplicationUrl(`http://localhost:9000/component_measures?id=${sonarComponent}&metric=Duplications&view=list`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/duplication`,
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/duplication?token=${sonarToken}`,
       { headers: {"Authorization" : `${jwtToken}`} })
       .then((response) => {
         setDuplicationList(response.data)

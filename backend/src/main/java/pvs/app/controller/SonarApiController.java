@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pvs.app.dto.BugDTO;
 import pvs.app.dto.CodeCoverageDTO;
@@ -39,10 +40,10 @@ public class SonarApiController {
     }
 
     @GetMapping("/sonar/{component}/coverage")
-    public ResponseEntity<String> getCoverage(@PathVariable("component") String component) {
+    public ResponseEntity<String> getCoverage(@PathVariable("component") String component, @RequestParam("token") String token) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            List<CodeCoverageDTO> coverages = sonarApiService.getSonarCodeCoverage(component);
+            List<CodeCoverageDTO> coverages = sonarApiService.getSonarCodeCoverage(component, token);
             if(!coverages.isEmpty()) {
                 String coverageString = objectMapper.writeValueAsString(coverages);
 
@@ -61,10 +62,10 @@ public class SonarApiController {
     }
 
     @GetMapping("/sonar/{component}/bug")
-    public ResponseEntity<String> getBug(@PathVariable("component") String component) throws IOException {
+    public ResponseEntity<String> getBug(@PathVariable("component") String component, @RequestParam("token") String token) throws IOException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            List<BugDTO> bugList = sonarApiService.getSonarBug(component);
+            List<BugDTO> bugList = sonarApiService.getSonarBug(component, token);
             if(!bugList.isEmpty()) {
                 String bugListString = objectMapper.writeValueAsString(bugList);
 
@@ -83,10 +84,10 @@ public class SonarApiController {
     }
 
     @GetMapping("/sonar/{component}/code_smell")
-    public ResponseEntity<String> getCodeSmell(@PathVariable("component") String component) throws IOException {
+    public ResponseEntity<String> getCodeSmell(@PathVariable("component") String component, @RequestParam("token") String token) throws IOException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            List<CodeSmellDTO> codeSmellList = sonarApiService.getSonarCodeSmell(component);
+            List<CodeSmellDTO> codeSmellList = sonarApiService.getSonarCodeSmell(component, token);
             if(!codeSmellList.isEmpty()) {
                 String codeSmellListString = objectMapper.writeValueAsString(codeSmellList);
 
@@ -105,10 +106,10 @@ public class SonarApiController {
     }
 
     @GetMapping("/sonar/{component}/duplication")
-    public ResponseEntity<String> getDuplication(@PathVariable("component") String component) throws IOException {
+    public ResponseEntity<String> getDuplication(@PathVariable("component") String component, @RequestParam("token") String token) throws IOException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            List<DuplicationDTO> duplicationList = sonarApiService.getDuplication(component);
+            List<DuplicationDTO> duplicationList = sonarApiService.getDuplication(component, token);
             if(!duplicationList.isEmpty()) {
                 String duplicationListString = objectMapper.writeValueAsString(duplicationList);
 

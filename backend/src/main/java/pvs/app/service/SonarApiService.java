@@ -37,7 +37,7 @@ public class SonarApiService {
         isoParser = ISODateTimeFormat.dateTimeNoMillis().withLocale(Locale.TAIWAN);
     }
 
-    public boolean checkSonarURL(String url) {
+    public boolean checkSonarURL(String url, String token) {
         if(!url.contains("localhost")){
             return false;
         }
@@ -48,6 +48,7 @@ public class SonarApiService {
         this.webClient
                 .get()
                 .uri(targetURL)
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes()))
                 .exchange()
                 .doOnSuccess(clientResponse ->
                         result.set(clientResponse.statusCode().equals(HttpStatus.OK))
@@ -56,9 +57,10 @@ public class SonarApiService {
         return result.get();
     }
 
-    public List<CodeCoverageDTO> getSonarCodeCoverage(String component) throws IOException {
+    public List<CodeCoverageDTO> getSonarCodeCoverage(String component, String token) throws IOException {
         String responseJson = Objects.requireNonNull(this.webClient.get()
                 .uri("/measures/search_history?component=" + component + "&metrics=coverage")
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes()))
                 .exchange()
                 .block())
                 .bodyToMono(String.class)
@@ -89,9 +91,10 @@ public class SonarApiService {
         return coverages;
     }
 
-    public List<BugDTO> getSonarBug(String component) throws IOException {
+    public List<BugDTO> getSonarBug(String component, String token) throws IOException {
         String responseJson = Objects.requireNonNull(this.webClient.get()
                 .uri("/measures/search_history?component=" + component + "&metrics=bugs")
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes()))
                 .exchange()
                 .block())
                 .bodyToMono(String.class)
@@ -121,9 +124,10 @@ public class SonarApiService {
         return bugList;
     }
 
-    public List<CodeSmellDTO> getSonarCodeSmell(String component) throws IOException {
+    public List<CodeSmellDTO> getSonarCodeSmell(String component, String token) throws IOException {
         String responseJson = Objects.requireNonNull(this.webClient.get()
                 .uri("/measures/search_history?component=" + component + "&metrics=code_smells")
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes()))
                 .exchange()
                 .block())
                 .bodyToMono(String.class)
@@ -152,9 +156,10 @@ public class SonarApiService {
         return codeSmellList;
     }
 
-    public List<DuplicationDTO> getDuplication(String component) throws IOException {
+    public List<DuplicationDTO> getDuplication(String component, String token) throws IOException {
         String responseJson = Objects.requireNonNull(this.webClient.get()
                 .uri("/measures/search_history?component=" + component + "&metrics=duplicated_lines_density")
+                .header("Authorization", "Basic " + Base64.getEncoder().encodeToString((token + ":").getBytes()))
                 .exchange()
                 .block())
                 .bodyToMono(String.class)
