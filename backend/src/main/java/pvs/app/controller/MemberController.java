@@ -30,7 +30,7 @@ public class MemberController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("新建使用者失敗");
             }
         }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("你去死吧");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("使用者已存在");
         }
     }
 

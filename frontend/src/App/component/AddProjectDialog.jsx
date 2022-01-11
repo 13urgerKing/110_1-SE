@@ -15,88 +15,30 @@ import {
 
 export default function AddProjectDialog({ open, reloadProjects, handleClose }) {
     const [projectName, setProjectName] = useState("")
-    const [githubRepositoryURL, setGithubRepositoryURL] = useState("")
-    const [githubToken, setGithubToken] = useState("")
-    const [sonarRepositoryURL, setSonarRepositoryURL] = useState("")
-    const [sonarToken, setSonarToken] = useState("")
-    const [isGithubAvailable, setIsGithubAvailable] = useState(false)
-    const [isSonarAvailable, setIsSonarAvailable] = useState(false)
     const jwtToken = localStorage.getItem("jwtToken")
 
     const createProject = () => {
-      let checker = []
-      if(projectName === "" || (githubRepositoryURL === "" && sonarRepositoryURL === "")) {
-        alert("不準啦馬的>///<")
-      } else {
-        if(githubRepositoryURL !== "" && githubToken !== "") {
-          checker.push(checkGithubRepositoryURL());
-        }
-        if(sonarRepositoryURL !== "" && sonarToken !== "") {
-          checker.push(checkSonarRepositoryURL());
-        }
+      if(projectName === "") {
+        alert("專案名稱不能為空")
+      }
 
-        Promise.all(checker)
-          .then((response)=> {
-            if(response.includes(false) == false) {
-              let payload = {
-                projectName : projectName,
-                githubRepositoryURL : githubRepositoryURL,
-                githubToken : githubToken,
-                sonarRepositoryURL : sonarRepositoryURL,
-                sonarToken : sonarToken
-              }
-              
-              Axios.post("http://localhost:9100/pvs-api/project", payload,
-              { headers: {"Authorization" : `${jwtToken}`} })
-                 .then((response) => {
-                    reloadProjects()
-                    handleClose()
-                 })
-                 .catch((e) => {
-                    alert(e.response.status)
-                    console.error(e)
-                 }) 
-            }
-          }).catch((e) => {
+      let payload = {
+        projectName : projectName,
+      }
+
+      Axios.post("http://localhost:9100/pvs-api/project", payload, {headers: {"Authorization" : `${jwtToken}`}})
+          .then((response) => {
+            reloadProjects()
+            handleClose()
+          })
+          .catch((e) => {
             alert(e.response.status)
             console.error(e)
           })
-      }
-    }
-
-    const checkGithubRepositoryURL = () => {
-      return Axios.get(`http://localhost:9100/pvs-api/repository/github/check?url=${githubRepositoryURL}&token=${githubToken}`,
-      { headers: {"Authorization" : `${jwtToken}`} })
-      .then((response) => {
-        setIsGithubAvailable(true);
-        return true
-      })
-      .catch((e) => {
-        alert("github error")
-        return false
-      }) 
-    }
-
-    const checkSonarRepositoryURL = () => {
-      return Axios.get(`http://localhost:9100/pvs-api/repository/sonar/check?url=${sonarRepositoryURL}&token=${sonarToken}`,
-      { headers: {"Authorization" : `${jwtToken}`} })
-      .then((response) => {
-        setIsSonarAvailable(true);
-        return true
-      })
-      .catch((e) => {
-        alert("sonar error")
-        console.error(e)
-        return false
-      }) 
     }
 
     useEffect(() => {
       setProjectName("")
-      setGithubRepositoryURL("")
-      setGithubToken("")
-      setSonarRepositoryURL("")
-      setSonarToken("")
     }, [open])
     
     return (
@@ -104,7 +46,7 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
           <DialogTitle id="form-dialog-title">Create Project</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              To create a project, please enter the project name and the repository URL you want to subscribe here.
+              To create a project, please enter the project name.
             </DialogContentText>
             <TextField
               autoFocus
@@ -115,73 +57,6 @@ export default function AddProjectDialog({ open, reloadProjects, handleClose }) 
               fullWidth
               onChange = {(e) => {setProjectName(e.target.value)}}
             />
-            <TextField
-              margin="dense"
-              id="GithubRepositoryURL"
-              label="Github Repository URL"
-              type="text"
-              fullWidth
-              onChange = {(e) => {setGithubRepositoryURL(e.target.value)}}
-              required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SiGithub />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              margin="dense"
-              id="GithubToken"
-              label="Github Token"
-              type="text"
-              fullWidth
-              onChange = {(e) => {setGithubToken(e.target.value)}}
-              required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SiGithub />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            
-            <TextField
-              margin="dense"
-              id="SonarRepositoryURL"
-              label="Sonar Repository URL"
-              type="text"
-              fullWidth
-              onChange = {(e) => {setSonarRepositoryURL(e.target.value)}}
-              required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SiSonarqube />
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <TextField
-              margin="dense"
-              id="SonarToken"
-              label="Sonar Token"
-              type="text"
-              fullWidth
-              onChange = {(e) => {setSonarToken(e.target.value)}}
-              required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SiSonarqube />
-                  </InputAdornment>
-                ),
-              }}
-            />
-
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">

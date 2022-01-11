@@ -32,23 +32,7 @@ public class ProjectService {
         Project project = new Project();
         project.setMemberId(1L);
         project.setName(projectDTO.getProjectName());
-        savedProject = projectDAO.save(project);
-
-        if(!projectDTO.getGithubRepositoryURL().equals("")){
-            AddGithubRepositoryDTO addGithubRepositoryDTO = new AddGithubRepositoryDTO();
-            addGithubRepositoryDTO.setProjectId(savedProject.getProjectId());
-            addGithubRepositoryDTO.setRepositoryURL(projectDTO.getGithubRepositoryURL());
-            addGithubRepositoryDTO.setToken(projectDTO.getGithubToken());
-            addGithubRepo(addGithubRepositoryDTO);
-        }
-
-        if(!projectDTO.getSonarRepositoryURL().equals("")){
-            AddSonarRepositoryDTO addSonarRepositoryDTO = new AddSonarRepositoryDTO();
-            addSonarRepositoryDTO.setProjectId(savedProject.getProjectId());
-            addSonarRepositoryDTO.setRepositoryURL(projectDTO.getSonarRepositoryURL());
-            addSonarRepositoryDTO.setToken(projectDTO.getSonarToken());
-            addSonarRepo(addSonarRepositoryDTO);
-        }
+        projectDAO.save(project);
     }
 
     public void delete(DeleteProjectDTO deleteProjectDTO) throws IOException {

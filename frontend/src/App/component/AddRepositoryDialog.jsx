@@ -20,7 +20,7 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
 
   const addRepository = () => {
     if(repositoryURL === "") {
-      alert("不準啦馬的>///<")
+      alert("網址不能為空")
     } else {
       let payload = {
         projectId: projectId,
