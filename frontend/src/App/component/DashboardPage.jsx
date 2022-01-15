@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import ProjectAvatar from './ProjectAvatar'
 import Axios from 'axios'
 import './Trello.css'
-import trelloLoad from './Trello.js'
+// import trelloLoad from './Trello.js'
+import TrelloBoard from './trello/TrelloBoard'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -36,8 +36,13 @@ function DashboardPage(props) {
         alert(e.response.status)
         console.error(e)
       })
-    trelloLoad();
   }, [])
+
+  setTimeout(() => {
+    let script = document.createElement("script");
+    script.src = "https://p.trellocdn.com/embed.min.js";
+    document.body.appendChild(script);
+  }, 1500);
 
   return (
     <div>
@@ -46,8 +51,7 @@ function DashboardPage(props) {
 
       <div className="base">
         <div className="board">
-          <div className="board-lists" id="lists">
-          </div>
+          <TrelloBoard></TrelloBoard>
         </div>
       </div>
     </div>

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import ProjectAvatar from './ProjectAvatar'
+import ProjectAvatar from './../ProjectAvatar';
 import Axios from 'axios'
 import { CircularProgress, Backdrop } from '@material-ui/core'
 import { connect } from 'react-redux'
-import DrawingBoard from './DrawingBoard'
+import DrawingBoard from './../DrawingBoard'
 import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
@@ -21,13 +21,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function CodeSmellsPage(prop) {
+function CodeCoveragePage(prop) {
   const classes = useStyles()
-  const [codeSmellList, setCodeSmellList] = useState([])
+  const [coverageList, setCoverageList] = useState([])
   const [currentProject, setCurrentProject] = useState(undefined)
-  const [codeSmellUrl, setCodeSmellUrl] = useState("")
-  const [dataForCodeSmellChart, setDataForCodeSmellChart] = useState({ labels: [], data: { codeSmell: [] } })
-
+  const [dataForCoverageChart, setDataForCoverageChart] = useState({ labels: [], data: { coverage: [] } })
+  const [coverageUrl, setCoverageUrl] = useState("")
   const projectId = localStorage.getItem("projectId")
   const jwtToken = localStorage.getItem("jwtToken")
 
@@ -39,6 +38,7 @@ function CodeSmellsPage(prop) {
     setOpen(!open)
   };
 
+  // Get Authorization Data(Project Data)
   useEffect(() => {
     Axios.get(`http://localhost:9100/pvs-api/project/1/${projectId}`,
       { headers: { "Authorization": `${jwtToken}` } })
@@ -57,11 +57,11 @@ function CodeSmellsPage(prop) {
       let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
       let sonarToken = repositoryDTO.token
       let sonarComponent = repositoryDTO.url.split("id=")[1]
-      setCodeSmellUrl(`http://localhost:9000/project/issues?id=${sonarComponent}&resolved=false&types=CODE_SMELL`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/code_smell?token=${sonarToken}`,
+      setCoverageUrl(`http://localhost:9000/component_measures?id=${sonarComponent}&metric=Coverage&view=list`)
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/coverage?token=${sonarToken}`,
         { headers: { "Authorization": `${jwtToken}` } })
         .then((response) => {
-          setCodeSmellList(response.data)
+          setCoverageList(response.data)
         })
         .catch((e) => {
           alert(e.response.status)
@@ -71,17 +71,15 @@ function CodeSmellsPage(prop) {
   }, [currentProject])
 
   useEffect(() => {
-    let chartDataset = { labels: [], data: { codeSmell: [] } }
+    let chartDataset = { labels: [], data: { coverage: [] } }
 
-    codeSmellList.forEach(codeSmell => {
-      chartDataset.labels.push(moment(codeSmell.date).format("YYYY-MM-DD HH:mm:ss"))
-      chartDataset.data.codeSmell.push(codeSmell.value)
+    coverageList.forEach(coverage => {
+      chartDataset.labels.push(moment(coverage.date).format("YYYY-MM-DD HH:mm:ss"))
+      chartDataset.data.coverage.push(coverage.value)
     })
-
-    setDataForCodeSmellChart(chartDataset)
+    setDataForCoverageChart(chartDataset)
     handleClose()
-
-  }, [codeSmellList, prop.startMonth, prop.endMonth])
+  }, [coverageList, prop.startMonth, prop.endMonth])
 
   return (
     <div style={{ marginLeft: "10px" }}>
@@ -97,14 +95,13 @@ function CodeSmellsPage(prop) {
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
-
       <div className={classes.root}>
         <div style={{ width: "67%" }}>
           <div>
-            <h1>Code Smells</h1>
-            <h2><a href={codeSmellUrl} target="blank">{dataForCodeSmellChart.data.codeSmell[dataForCodeSmellChart.data.codeSmell.length - 1]}</a></h2>
+            <h1>Code Coverage</h1>
+            <h2><a href={coverageUrl} target="blank">{dataForCoverageChart.data.coverage[dataForCoverageChart.data.coverage.length - 1]}%</a></h2>
             <div>
-              <DrawingBoard data={dataForCodeSmellChart} maxBoardY={Math.max(...dataForCodeSmellChart.data.codeSmell) + 5} id="code-smells-chart" />
+              <DrawingBoard data={dataForCoverageChart} maxBoardY={100} id="code-coverage-chart" />
             </div>
           </div>
         </div>
@@ -120,4 +117,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(CodeSmellsPage)
+export default connect(mapStateToProps)(CodeCoveragePage)

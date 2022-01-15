@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import ProjectAvatar from './ProjectAvatar'
-import DrawingBoard from './DrawingBoard'
+import ProjectAvatar from './../ProjectAvatar';
+import DrawingBoard from './../DrawingBoard'
 import Axios from 'axios'
 import moment from 'moment'
 import { CircularProgress, Backdrop } from '@material-ui/core'
 import { connect } from 'react-redux';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,10 +21,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function IssuesPage(prop) {
+function CodeBasePage(prop) {
   const classes = useStyles()
-  const [issueListData, setIssueListData] = useState([])
-  const [dataForIssueChart, setDataForIssueChart] = useState({ labels: [], data: { created: [], closed: [] } })
+  const [commitListData, setCommitListData] = useState([])
+  const [dataForCodeBaseChart, setDataForCodeBaseChart] = useState({ labels: [], data: { additions: [], deletions: [] } })
 
   const [currentProject, setCurrentProject] = useState({})
 
@@ -57,50 +56,56 @@ function IssuesPage(prop) {
       handleToggle()
       const githubRepo = currentProject.repositoryDTOList.find(repo => repo.type == 'github')
       const query = githubRepo.url.split("github.com/")[1]
-
-      // todo need reafctor with async
-      Axios.get(`http://localhost:9100/pvs-api/github/issues/${query}`,
-        { headers: { "Authorization": `${jwtToken}` } })
+      const githubToken = githubRepo.token
+      Axios.post(`http://localhost:9100/pvs-api/github/commits/${query}`,
+        {
+          "githubToken": `${githubToken}`
+        },
+        {
+          headers: { "Authorization": `${jwtToken}` }
+        })
         .then((response) => {
-          console.log(response.data)
-          setIssueListData(response.data)
-          handleClose()
+          // todo need reafctor with async
+          Axios.get(`http://localhost:9100/pvs-api/github/commits/${query}`,
+            { headers: { "Authorization": `${jwtToken}` } })
+            .then((response) => {
+              setCommitListData(response.data)
+              handleClose()
+            })
+            .catch((e) => {
+              alert(e.response.status)
+              console.error(e)
+            })
         })
         .catch((e) => {
-          alert(e.response.status);
+          alert(e.response.status)
           console.error(e)
         })
     }
   }, [currentProject, prop.startMonth, prop.endMonth])
 
   useEffect(() => {
-    const { endMonth } = prop
-    let chartDataset = { labels: [], data: { created: [], closed: [] } }
-    let issueListDataSortedByCreatedAt = issueListData
-    let issueListDataSortedByClosedAt = issueListData
+    const { startMonth, endMonth } = prop
 
-    issueListDataSortedByCreatedAt.sort((a, b) => a.createdAt - b.createdAt)
-    issueListDataSortedByClosedAt.sort((a, b) => a.closedAt - b.closedAt)
+    let chartDataset = { labels: [], data: { additions: [], deletions: [] } }
+    for (let month = moment(startMonth); month <= moment(endMonth); month = month.add(1, 'months')) {
+      chartDataset.labels.push(month.format("YYYY-MM"))
 
-    if (issueListDataSortedByCreatedAt.length > 0) {
-      for (let month = moment(issueListDataSortedByCreatedAt[0].createdAt); month <= moment(endMonth).add(1, 'months'); month = month.add(1, 'months')) {
-        let index
-        chartDataset.labels.push(month.format("YYYY-MM"))
-
-        index = issueListDataSortedByCreatedAt.findIndex(issue => {
-          return moment(issue.createdAt).year() > month.year() || moment(issue.createdAt).year() == month.year() && moment(issue.createdAt).month() > month.month()
-        })
-        chartDataset.data.created.push(index == -1 ? issueListData.length : index)
-
-        index = issueListDataSortedByClosedAt.findIndex(issue => {
-          return moment(issue.closedAt).year() > month.year() || moment(issue.closedAt).year() == month.year() && moment(issue.closedAt).month() > month.month()
-        })
-        chartDataset.data.closed.push(index == -1 ? issueListData.length : index)
-      }
+      chartDataset.data.additions.push(commitListData.filter(commit => {
+        return moment(commit.committedDate).format("YYYY-MM") == month.format("YYYY-MM")
+      })
+        .reduce(function (additionSum, currentCommit) {
+          return additionSum + currentCommit.additions;
+        }, 0))
+      chartDataset.data.deletions.push(commitListData.filter(commit => {
+        return moment(commit.committedDate).format("YYYY-MM") == month.format("YYYY-MM")
+      })
+        .reduce(function (deletionSum, currentCommit) {
+          return deletionSum - currentCommit.deletions;
+        }, 0))
     }
-    console.log(chartDataset)
-    setDataForIssueChart(chartDataset)
-  }, [issueListData])
+    setDataForCodeBaseChart(chartDataset)
+  }, [commitListData, prop.startMonth, prop.endMonth])
 
   return (
     <div style={{ marginLeft: "10px" }}>
@@ -122,7 +127,7 @@ function IssuesPage(prop) {
           <div>
             <h1>Team</h1>
             <div>
-              <DrawingBoard data={dataForIssueChart} color='skyblue' id="team-issue-chart" isIssue={true} />
+              <DrawingBoard data={dataForCodeBaseChart} isCodeBase={true} id="team-codebase-chart" />
             </div>
           </div>
         </div>
@@ -133,8 +138,9 @@ function IssuesPage(prop) {
 
 const mapStateToProps = (state) => {
   return {
+    startMonth: state.selectedMonth.startMonth,
     endMonth: state.selectedMonth.endMonth
   }
 }
 
-export default connect(mapStateToProps)(IssuesPage);
+export default connect(mapStateToProps)(CodeBasePage);

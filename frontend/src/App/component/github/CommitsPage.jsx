@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import ProjectAvatar from './ProjectAvatar'
-import DrawingBoard from './DrawingBoard'
+import ProjectAvatar from './../ProjectAvatar';
+import DrawingBoard from './../DrawingBoard'
 import Axios from 'axios'
 import moment from 'moment'
 import { CircularProgress, Backdrop, Select, MenuItem } from '@material-ui/core'

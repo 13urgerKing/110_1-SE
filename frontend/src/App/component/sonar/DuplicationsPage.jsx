@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import ProjectAvatar from './ProjectAvatar'
+import ProjectAvatar from './../ProjectAvatar';
 import Axios from 'axios'
 import { CircularProgress, Backdrop } from '@material-ui/core'
 import { connect } from 'react-redux'
-import DrawingBoard from './DrawingBoard'
+import DrawingBoard from './../DrawingBoard'
 import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
@@ -21,14 +21,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function BugsPage(prop) {
+function DuplicationsPage(prop) {
   const classes = useStyles()
-  const [bugList, setBugList] = useState([])
+  const [duplicationList, setDuplicationList] = useState([])
   const [currentProject, setCurrentProject] = useState(undefined)
-  const [bugUrl, setBugUrl] = useState("")
-  const [dataForBugChart, setDataForBugChart] = useState({ labels: [], data: { bug: [] } })
+  const [duplicationUrl, setDuplicationUrl] = useState("")
+  const [dataForDuplicationChart, setDataForDuplicationChart] = useState({ labels: [], data: { duplication: [] } })
 
   const projectId = localStorage.getItem("projectId")
+  const jwtToken = localStorage.getItem("jwtToken")
+
   const [open, setOpen] = useState(false)
   const handleClose = () => {
     setOpen(false)
@@ -37,9 +39,6 @@ function BugsPage(prop) {
     setOpen(!open)
   };
 
-  const jwtToken = localStorage.getItem("jwtToken")
-
-  //TODO 這邊寫死的記得要改唷!!!! >////<
 
   useEffect(() => {
     Axios.get(`http://localhost:9100/pvs-api/project/1/${projectId}`,
@@ -47,7 +46,7 @@ function BugsPage(prop) {
       .then(response => {
         setCurrentProject(response.data)
       })
-      .catch(e => {
+      .catch((e) => {
         alert(e.response.status)
         console.error(e)
       })
@@ -59,11 +58,11 @@ function BugsPage(prop) {
       let repositoryDTO = currentProject.repositoryDTOList.find(x => x.type == "sonar")
       let sonarToken = repositoryDTO.token
       let sonarComponent = repositoryDTO.url.split("id=")[1]
-      setBugUrl(`http://localhost:9000/project/issues?id=${sonarComponent}&resolved=false&types=BUG`)
-      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/bug?token=${sonarToken}`,
+      setDuplicationUrl(`http://localhost:9000/component_measures?id=${sonarComponent}&metric=Duplications&view=list`)
+      Axios.get(`http://localhost:9100/pvs-api/sonar/${sonarComponent}/duplication?token=${sonarToken}`,
         { headers: { "Authorization": `${jwtToken}` } })
         .then((response) => {
-          setBugList(response.data)
+          setDuplicationList(response.data)
         })
         .catch((e) => {
           alert(e.response.status)
@@ -72,19 +71,18 @@ function BugsPage(prop) {
     }
   }, [currentProject])
 
-
   useEffect(() => {
-    let chartDataset = { labels: [], data: { bug: [] } }
+    let chartDataset = { labels: [], data: { duplication: [] } }
 
-    bugList.forEach(bug => {
-      chartDataset.labels.push(moment(bug.date).format("YYYY-MM-DD HH:mm:ss"))
-      chartDataset.data.bug.push(bug.value)
+    duplicationList.forEach(duplication => {
+      chartDataset.labels.push(moment(duplication.date).format("YYYY-MM-DD HH:mm:ss"))
+      chartDataset.data.duplication.push(duplication.value)
     })
 
-    setDataForBugChart(chartDataset)
+    setDataForDuplicationChart(chartDataset)
     handleClose()
 
-  }, [bugList, prop.startMonth, prop.endMonth])
+  }, [duplicationList, prop.startMonth, prop.endMonth])
 
   return (
     <div style={{ marginLeft: "10px" }}>
@@ -100,13 +98,14 @@ function BugsPage(prop) {
           <h2 id="number-of-sonar">{currentProject ? currentProject.projectName : ""}</h2>
         </p>
       </div>
+
       <div className={classes.root}>
         <div style={{ width: "67%" }}>
           <div>
-            <h1>Bugs</h1>
-            <h2><a href={bugUrl} target="blank">{dataForBugChart.data.bug[dataForBugChart.data.bug.length - 1]}</a></h2>
+            <h1>Duplications</h1>
+            <h2><a href={duplicationUrl} target="blank">{dataForDuplicationChart.data.duplication[dataForDuplicationChart.data.duplication.length - 1]}%</a></h2>
             <div>
-              <DrawingBoard data={dataForBugChart} maxBoardY={Math.max(...dataForBugChart.data.bug) + 5} id="bugs-chart" />
+              <DrawingBoard data={dataForDuplicationChart} maxBoardY={100} id="duplications-chart" />
             </div>
           </div>
         </div>
@@ -122,4 +121,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(BugsPage)
+export default connect(mapStateToProps)(DuplicationsPage)
