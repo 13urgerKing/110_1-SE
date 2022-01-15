@@ -12,10 +12,11 @@ import {
   Button
 } from '@material-ui/core'
 
-export default function AddRepositoryDialog({ open, reloadProjects, handleClose, projectId, wantedRepoType }) {
+export default function AddRepositoryDialog({ open, reloadProjects, handleClose, projectId, hasGithubRepo, hasSonarRepo, hasTrelloRepo }) {
   const [type, setType] = useState("")
   const [repositoryURL, setRepositoryURL] = useState("")
   const [token, setToken] = useState(false)
+  const [key, setKey] = useState(false)
   const jwtToken = localStorage.getItem("jwtToken")
 
   const addRepository = () => {
@@ -26,16 +27,13 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
         projectId: projectId,
         repositoryURL: repositoryURL,
         token: token,
+        key: key,
       }
       Axios.post(`http://localhost:9100/pvs-api/project/${projectId}/repository/${type}`, payload,
-        {
-          headers: { "Authorization": `${jwtToken}` }
-        }
-      )
+        {headers: { "Authorization": `${jwtToken}` }})
         .then((response) => {
           reloadProjects()
           handleClose()
-          setType("");
         })
         .catch((e) => {
           alert(e.response.status)
@@ -45,8 +43,10 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
   }
 
   useEffect(() => {
+    setType("");
     setRepositoryURL("")
     setToken("")
+    setKey("")
   }, [open])
 
   return (
@@ -62,10 +62,13 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
           onChange={(e) => { setType(e.target.value) }}>
           <MenuItem value=""><em>None</em> </MenuItem>
           {
-            wantedRepoType !== "sonar" ? <MenuItem value={"github"}>Github</MenuItem> : null
+            hasGithubRepo ? null : <MenuItem value={"github"}>Github</MenuItem>
           }
           {
-            wantedRepoType !== "github" ? <MenuItem value={"sonar"}>Sonar</MenuItem> : null
+            hasSonarRepo ? null : <MenuItem value={"sonar"}>Sonar</MenuItem>
+          }
+          {
+            hasTrelloRepo ? null : <MenuItem value={"trello"}>Trello</MenuItem>
           }
         </Select>
         {
@@ -78,7 +81,6 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
             onChange={(e) => { setRepositoryURL(e.target.value) }}
           />
         }
-
         {
           type == "github" ? <TextField
             margin="dense"
@@ -98,6 +100,26 @@ export default function AddRepositoryDialog({ open, reloadProjects, handleClose,
             fullWidth
             onChange={(e) => { setToken(e.target.value) }}
           /> : null
+        }
+        {
+          type == "trello" ? <div>
+            <TextField
+              margin="dense"
+              id="TrelloKey"
+              label="Trello Key"
+              type="text"
+              fullWidth
+              onChange={(e) => { setKey(e.target.value) }}
+            />
+            <TextField
+              margin="dense"
+              id="TrelloToken"
+              label="Trello Token"
+              type="text"
+              fullWidth
+              onChange={(e) => { setToken(e.target.value) }}
+            />
+          </div> : null
         }
 
       </DialogContent>

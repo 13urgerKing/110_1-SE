@@ -3,9 +3,9 @@ package pvs.app.dto;
 import lombok.Data;
 
 @Data
-public class RepositoryDTO {
-    private String url;
-    private String type;
+public class AddTrelloRepositoryDTO {
+    private Long projectId;
+    private String repositoryURL;
     private String token;
     private String key;
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pvs.app.dto.AddGithubRepositoryDTO;
 import pvs.app.dto.AddSonarRepositoryDTO;
+import pvs.app.dto.AddTrelloRepositoryDTO;
 import pvs.app.dto.CreateProjectDTO;
 import pvs.app.dto.DeleteGithubRepositoryDTO;
 import pvs.app.dto.DeleteProjectDTO;
@@ -120,6 +121,19 @@ public class ProjectController {
                 }
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(urlInvalidMessage);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+        }
+    }
+
+    @PostMapping("/project/{projectId}/repository/trello")
+    public ResponseEntity<String> addTrelloRepository(@RequestBody AddTrelloRepositoryDTO addTrelloRepositoryDTO) {
+        try {  
+            if (projectService.addTrelloRepo(addTrelloRepositoryDTO)) {
+                return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);

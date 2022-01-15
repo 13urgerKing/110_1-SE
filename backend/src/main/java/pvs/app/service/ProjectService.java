@@ -53,6 +53,7 @@ public class ProjectService {
                 repositoryDTO.setUrl(repository.getUrl());
                 repositoryDTO.setType(repository.getType());
                 repositoryDTO.setToken(repository.getToken());
+                repositoryDTO.setKey(repository.getKey());
                 projectDTO.getRepositoryDTOList().add(repositoryDTO);
             }
             projectDTOList.add(projectDTO);
@@ -101,6 +102,23 @@ public class ProjectService {
         }
     }
 
+    public boolean addTrelloRepo(AddTrelloRepositoryDTO addTrelloRepositoryDTO) {
+        Optional<Project> projectOptional = projectDAO.findById(addTrelloRepositoryDTO.getProjectId());
+        if (projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            Repository repository = new Repository();
+            repository.setUrl(addTrelloRepositoryDTO.getRepositoryURL());
+            repository.setType("trello");
+            repository.setToken(addTrelloRepositoryDTO.getToken());
+            repository.setKey(addTrelloRepositoryDTO.getKey());
+            project.getRepositorySet().add(repository);
+            projectDAO.save(project);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public boolean deleteSonarRepo(DeleteSonarRepositoryDTO deleteSonarRepositoryDTO) {
         Optional<Project> projectOptional = projectDAO.findById(deleteSonarRepositoryDTO.getProjectId());
         if (projectOptional.isPresent()) {
@@ -118,6 +136,18 @@ public class ProjectService {
         if (projectOptional.isPresent()) {
             Project project = projectOptional.get();
             project.getRepositorySet().remove(project.findRepositoryByType("github"));
+            projectDAO.save(project);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deleteTrelloRepo(DeleteTrelloRepositoryDTO deleteTrelloRepositoryDTO) {
+        Optional<Project> projectOptional = projectDAO.findById(deleteTrelloRepositoryDTO.getProjectId());
+        if (projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            project.getRepositorySet().remove(project.findRepositoryByType("trello"));
             projectDAO.save(project);
             return true;
         } else {

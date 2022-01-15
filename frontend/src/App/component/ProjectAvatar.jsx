@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Box, CardActionArea, Avatar, CardActions, IconButton } from '@material-ui/core'
 import GitHubIcon from '@material-ui/icons/GitHub';
 import GpsFixedIcon from '@material-ui/icons/GpsFixed';
+import AppsIcon from '@material-ui/icons/Apps';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddRepositoryDialog from './AddRepositoryDialog';
@@ -42,22 +43,17 @@ function ProjectAvatar(props) {
   const [wantedRepoType, setWantedRepoType] = useState(false)
   const [hasGithubRepo, setHasGithubRepo] = useState(false)
   const [hasSonarRepo, setHasSonarRepo] = useState(false)
+  const [hasTrelloRepo, setHasTrelloRepo] = useState(false)
 
   useEffect(() => {
     if (props.size === 'large') {
       const githubRepo = props.project.repositoryDTOList.find(x => x.type == "github")
       const sonarRepo = props.project.repositoryDTOList.find(x => x.type == "sonar")
+      const trelloRepo = props.project.repositoryDTOList.find(x => x.type == "trello")
 
       setHasGithubRepo(githubRepo != undefined)
       setHasSonarRepo(sonarRepo != undefined)
-
-      if (githubRepo != undefined) {
-        setWantedRepoType("sonar")
-      } else if (sonarRepo != undefined) {
-        setWantedRepoType("github")
-      } else {
-        setWantedRepoType("both")
-      }
+      setHasTrelloRepo(trelloRepo != undefined)
     }
   }, [props.project])
 
@@ -110,12 +106,17 @@ function ProjectAvatar(props) {
                 <GpsFixedIcon />
               </IconButton>
             }
-            {(!hasGithubRepo || !hasSonarRepo) &&
+            {hasTrelloRepo &&
+              <IconButton aria-label="Trello" onClick={goToDashboard}>
+                <AppsIcon />
+              </IconButton>
+            }
+            {(!hasGithubRepo || !hasSonarRepo || !hasTrelloRepo) &&
               <IconButton aria-label="Add Repository" onClick={showAddRepoDialog}>
                 <AddIcon />
               </IconButton>
             }
-            {(hasGithubRepo || hasSonarRepo) &&
+            {(hasGithubRepo || hasSonarRepo || hasTrelloRepo) &&
               <IconButton aria-label="Delete Repository" onClick={showDeleteRepoDialog}>
                 <DeleteIcon />
               </IconButton>
@@ -128,7 +129,9 @@ function ProjectAvatar(props) {
         reloadProjects={props.reloadProjects}
         handleClose={() => setAddRepoDialogOpen(false)}
         projectId={props.project.projectId}
-        wantedRepoType={wantedRepoType}
+        hasGithubRepo={hasGithubRepo}
+        hasSonarRepo={hasSonarRepo}
+        hasTrelloRepo={hasTrelloRepo}
       />
       <DeleteRepositoryDialog
         open={deleteRepoDialogOpen}

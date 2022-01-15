@@ -11,7 +11,7 @@ import {
   Button
 } from '@material-ui/core'
 
-export default function DeleteRepositoryDialog({ open, reloadProjects, handleClose, projectId, hasGithubRepo, hasSonarRepo }) {
+export default function DeleteRepositoryDialog({ open, reloadProjects, handleClose, projectId, hasGithubRepo, hasSonarRepo, hasTrelloRepo }) {
   const [type, setType] = useState(false)
   const jwtToken = localStorage.getItem("jwtToken")
 
@@ -47,6 +47,9 @@ export default function DeleteRepositoryDialog({ open, reloadProjects, handleClo
           }
           {
             hasSonarRepo ? <MenuItem value={"sonar"}>Sonar</MenuItem> : null
+          }
+          {
+            hasTrelloRepo ? <MenuItem value={"trello"}>Trello</MenuItem> : null
           }
         </Select>
       </DialogContent>

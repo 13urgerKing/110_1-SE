@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Axios from 'axios'
 import './Trello.css'
-// import trelloLoad from './Trello.js'
 import TrelloBoard from './trello/TrelloBoard'
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,7 +41,7 @@ function DashboardPage(props) {
     let script = document.createElement("script");
     script.src = "https://p.trellocdn.com/embed.min.js";
     document.body.appendChild(script);
-  }, 1500);
+  }, 2000);
 
   return (
     <div>
