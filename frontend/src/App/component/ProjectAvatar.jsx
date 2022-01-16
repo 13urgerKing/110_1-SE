@@ -140,6 +140,7 @@ function ProjectAvatar(props) {
         projectId={props.project.projectId}
         hasGithubRepo={hasGithubRepo}
         hasSonarRepo={hasSonarRepo}
+        hasTrelloRepo={hasTrelloRepo}
       />
     </div>//:()
   )
