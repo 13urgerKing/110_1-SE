@@ -193,7 +193,7 @@ function Sidebar(prop) {
             <Divider className={classes.divider} />
 
             {currentProject &&
-              currentProject.repositoryDTOList.find(x => x.type == "github") &&
+              currentProject.repositoryDTOList.find(x => x.type == "trello") &&
               <div>
                 <ListItem button onClick={() => { history.push("/trello") }}>
                   <ListItemIcon>

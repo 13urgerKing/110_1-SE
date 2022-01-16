@@ -69,10 +69,10 @@ function ProjectAvatar(props) {
     history.push("/code_coverage")
   }
 
-  const goToDashboard = () => {
+  const goToTrello = () => {
     localStorage.setItem("projectId", props.project.projectId)
     props.setCurrentProjectId(props.project.projectId)
-    history.push("/dashboard")
+    history.push("/trello")
   }
 
   const showAddRepoDialog = () => {
@@ -107,7 +107,7 @@ function ProjectAvatar(props) {
               </IconButton>
             }
             {hasTrelloRepo &&
-              <IconButton aria-label="Trello" onClick={goToDashboard}>
+              <IconButton aria-label="Trello" onClick={goToTrello}>
                 <AppsIcon />
               </IconButton>
             }
