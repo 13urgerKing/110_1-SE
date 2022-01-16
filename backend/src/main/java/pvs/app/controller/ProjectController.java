@@ -10,10 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pvs.app.dto.AddGithubRepositoryDTO;
 import pvs.app.dto.AddSonarRepositoryDTO;
+import pvs.app.dto.AddTrelloRepositoryDTO;
 import pvs.app.dto.CreateProjectDTO;
 import pvs.app.dto.DeleteGithubRepositoryDTO;
 import pvs.app.dto.DeleteProjectDTO;
 import pvs.app.dto.DeleteSonarRepositoryDTO;
+import pvs.app.dto.DeleteTrelloRepositoryDTO;
 import pvs.app.dto.ResponseProjectDTO;
 import pvs.app.service.ProjectService;
 import pvs.app.service.RepositoryService;
@@ -126,6 +128,19 @@ public class ProjectController {
         }
     }
 
+    @PostMapping("/project/{projectId}/repository/trello")
+    public ResponseEntity<String> addTrelloRepository(@RequestBody AddTrelloRepositoryDTO addTrelloRepositoryDTO) {
+        try {  
+            if (projectService.addTrelloRepo(addTrelloRepositoryDTO)) {
+                return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+        }
+    }
+
     @PostMapping("/project/delete/repository/sonar")
     public ResponseEntity<String> deleteSonarRepository(
             @RequestBody DeleteSonarRepositoryDTO deleteSonarRepositoryDTO) {
@@ -145,6 +160,20 @@ public class ProjectController {
             @RequestBody DeleteGithubRepositoryDTO deleteGithubRepositoryDTO) {
         try {
             if (projectService.deleteGithubRepo(deleteGithubRepositoryDTO)) {
+                return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+        }
+    }
+
+    @PostMapping("/project/delete/repository/trello")
+    public ResponseEntity<String> deleteTrelloRepository(
+            @RequestBody DeleteTrelloRepositoryDTO deleteTrelloRepositoryDTO) {
+        try {
+            if (projectService.deleteTrelloRepo(deleteTrelloRepositoryDTO)) {
                 return ResponseEntity.status(HttpStatus.OK).body(successMessage);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failMessage);

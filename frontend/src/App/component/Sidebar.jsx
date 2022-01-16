@@ -9,7 +9,8 @@ import {
   ExpandLess,
   ExpandMore,
   Code,
-  GpsFixed
+  GpsFixed,
+  Apps
 } from '@material-ui/icons'
 import {
   Drawer,
@@ -190,6 +191,18 @@ function Sidebar(prop) {
               <ListItemText primary="DashBoard" />
             </ListItem>
             <Divider className={classes.divider} />
+
+            {currentProject &&
+              currentProject.repositoryDTOList.find(x => x.type == "trello") &&
+              <div>
+                <ListItem button onClick={() => { history.push("/trello") }}>
+                  <ListItemIcon>
+                    <Apps size={30} />
+                  </ListItemIcon>
+                  <ListItemText primary="Trello" />
+                </ListItem>
+              </div>
+            }
 
             {currentProject &&
               currentProject.repositoryDTOList.find(x => x.type == "github") &&
