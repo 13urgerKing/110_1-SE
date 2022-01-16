@@ -40,7 +40,6 @@ function ProjectAvatar(props) {
 
   const [addRepoDialogOpen, setAddRepoDialogOpen] = useState(false)
   const [deleteRepoDialogOpen, setDeleteRepoDialogOpen] = useState(false)
-  const [wantedRepoType, setWantedRepoType] = useState(false)
   const [hasGithubRepo, setHasGithubRepo] = useState(false)
   const [hasSonarRepo, setHasSonarRepo] = useState(false)
   const [hasTrelloRepo, setHasTrelloRepo] = useState(false)
@@ -67,6 +66,12 @@ function ProjectAvatar(props) {
     localStorage.setItem("projectId", props.project.projectId)
     props.setCurrentProjectId(props.project.projectId)
     history.push("/code_coverage")
+  }
+
+  const goToDashboard = () => {
+    localStorage.setItem("projectId", props.project.projectId)
+    props.setCurrentProjectId(props.project.projectId)
+    history.push("/dashboard")
   }
 
   const goToTrello = () => {
