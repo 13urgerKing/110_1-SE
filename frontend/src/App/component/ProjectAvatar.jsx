@@ -69,6 +69,12 @@ function ProjectAvatar(props) {
     history.push("/code_coverage")
   }
 
+  const goToDashboard = () => {
+    localStorage.setItem("projectId", props.project.projectId)
+    props.setCurrentProjectId(props.project.projectId)
+    history.push("/dashboard")
+  }
+
   const goToTrello = () => {
     localStorage.setItem("projectId", props.project.projectId)
     props.setCurrentProjectId(props.project.projectId)
